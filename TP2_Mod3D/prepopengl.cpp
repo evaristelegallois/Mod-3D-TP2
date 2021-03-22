@@ -2,18 +2,22 @@
 
 #include "prepopengl.h"
 
-PrepOpenGL::PrepOpenGL(Discretisation * d, GLfloat* colors) : m_discr(d), m_colors(colors){
+PrepOpenGL::PrepOpenGL(Discretisation * d, bool isSegment) : d(d), isSegment(isSegment)
+{
     m_vbo.create();
     m_vbo.bind();
     QVector<GLfloat> vertData;
-    vertData = tableToVBO(d->getP(), d->segmentToTable());
+
+    if (isSegment) vertData = tableToVBO(d->getP(), d->segmentToTable());
+    else vertData = tableToVBO(d->getCount(), d->bezierToTable());
+
     m_vbo.allocate(vertData.constData(), vertData.count() * sizeof(GLfloat));
     m_vbo.release();
 }
 
 
-QVector<GLfloat> PrepOpenGL::tableToVBO(int step, float * tablePoint){
-
+QVector<GLfloat> PrepOpenGL::tableToVBO(int step, float * tablePoint)
+{
     //Votre composant de traduction "sortie de discrétisation" ->
     //"structures OpenGL" doit pouvoir faire ce choix (GL_Lines, Points ou Triangles)
 
@@ -23,7 +27,9 @@ QVector<GLfloat> PrepOpenGL::tableToVBO(int step, float * tablePoint){
     GLfloat * colors = new GLfloat[step*3]; //1 couleur (RBG) par sommet
 
     //Point begin, end;
-    tablePoint = m_discr->segmentToTable();
+
+    if (isSegment) tablePoint = d->segmentToTable();
+    else tablePoint = d->bezierToTable();
     float * values = tablePoint;
 
     for (int i=0; i<step*3; ++i){
@@ -36,11 +42,10 @@ QVector<GLfloat> PrepOpenGL::tableToVBO(int step, float * tablePoint){
 
     delete[] values;
 
-    //couleur
     for (int i =0; i<step; i++){
-        colors[i*3]   = m_colors[0];
-        colors[i*3+1] = m_colors[1];
-        colors[i*3+2] = m_colors[2];
+        colors[i*3] = 1.0;
+        colors[i*3+1] = 0.0;
+        colors[i*3+2] = 0.0;
     }
 
     //3 spécialisation OpenGL
@@ -72,7 +77,7 @@ void PrepOpenGL::draw(QOpenGLShaderProgram *program, QOpenGLFunctions *glFuncs){
     program->enableAttributeArray("posAttr");
     program->enableAttributeArray("colAttr");
 
-    for(int i=0; i < (int)m_discr->getP(); i++){
+    for(int i=0; i < (int)d->getP(); i++){
 
         // Pour des questions de portabilité, hors de la classe GLArea, tous les appels
         // aux fonctions glBidule doivent être préfixés par glFuncs->.
@@ -97,7 +102,7 @@ void PrepOpenGL::drawPoints(QOpenGLShaderProgram *program, QOpenGLFunctions *glF
     program->enableAttributeArray("posAttr");
     program->enableAttributeArray("colAttr");
 
-    for(int i=0; i < (int)m_discr->getP(); i++){
+    for(int i=0; i < (int)d->getP(); i++){
 
         // Pour des questions de portabilité, hors de la classe GLArea, tous les appels
         // aux fonctions glBidule doivent être préfixés par glFuncs->.

@@ -14,6 +14,7 @@ public:
     Parametre(float p);
 
     float getPValue();
+    void setPValue(float p);
 };
 
 #endif // PARAMETRE_H

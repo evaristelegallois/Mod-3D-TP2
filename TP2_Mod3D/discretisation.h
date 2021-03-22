@@ -7,19 +7,32 @@
 #include "parametre.h"
 #include "courbeparametrique.h"
 
-class Discretisation : public CourbeParametrique
+#include<QVector3D>
+
+class Discretisation
 {
 public:
     Discretisation(Segment segment, Parametre p);
-    Point getValue(Parametre p);
+    Discretisation(CourbeParametrique courbe, Parametre p);
+
+    Point getValueFromSegment(Parametre p);
     float * segmentToTable();
+
+    Point getValueFromBezierCurve(Parametre p);
+    Point derivedBezierCurve(Parametre p);
+    float * bezierToTable();
+
+    int recursiveFact(int value);
+    int binomialCoeff(int end, int start);
     float getP();
-    void courbeBezier(Point P0);
+    int getCount();
 
 private:
     Segment segment;
+    CourbeParametrique courbe;
     Parametre p;
     float * tablePoint;
+    int compteur;
 
 };
 

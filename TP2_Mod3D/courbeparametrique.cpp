@@ -3,59 +3,67 @@
 #include "courbeparametrique.h"
 #include <cmath>
 
-CourbeParametrique::CourbeParametrique(){}
-
-CourbeParametrique::CourbeParametrique(Parametre t, int n): t(t), n(n)
+CourbeParametrique::CourbeParametrique(Point start, Point end, Point ctrlPointList[], int n):
+    start(start), end(end), ctrlPointList(ctrlPointList), n(n)
 {
     //t entre 0 et 1 !!!!!
+    pointList = new Point[2]; //liste de points
+    this->setStart(start);
+    this->setEnd(end);
 }
 
-
-/**
- * @brief Discretisation::courbeBezier : discrétisation d'une coure de Bézier par avancée de front
- */
-void CourbeParametrique::discretizeBezierCurve(){
-    float q0 = bezierCurve(0);
-    float qp = 0;
-    float deltat = 0.1;
-    float seuilBas = 0.01;
-    float seuilHaut = 0.5;
-
-    /*float angle = acos()
-
-    while (t<1){
-        if (abs(angle)) return 0;
-
-    }*/
+CourbeParametrique::~CourbeParametrique()
+{
+    delete [] pointList;
+    pointList = nullptr;
 }
 
-float CourbeParametrique::bezierCurve(float pointList[]){
-    float curve = 0;
-    for (int i=0; i<n; i++){
-        curve += binomialCoeff(n, i)*pow(((float)1-t.getPValue()),n-i)
-                *pow((float)t.getPValue(),i)*pointList[i];
+/*
+Point * CourbeParametrique::derivedBezierCurve(Parametre t, Point pointList[]){
+    Point *curve = new Point[3];
+    for (int i=0; i<n-1; i++){
+        curve[i].setX(binomialCoeff(n-1, i)*pow(((float)1-t.getPValue()),n-1-i)
+                *pow((float)t.getPValue(),i)*(pointList[i+1].getX()-pointList[i].getX()));
+        curve[i].setY(binomialCoeff(n-1, i)*pow(((float)1-t.getPValue()),n-1-i)
+                *pow((float)t.getPValue(),i)*(pointList[i+1].getY()-pointList[i].getY()));
+        curve[i].setZ(binomialCoeff(n-1, i)*pow(((float)1-t.getPValue()),n-1-i)
+                *pow((float)t.getPValue(),i)*(pointList[i+1].getZ()-pointList[i].getZ()));
     }
+
+
     return curve;
 }
+*/
 
-float CourbeParametrique::derivedBezierCurve(float pointList[]){
-    float curve = 0;
-    for (int i=0; i<n-1; i++){
-        curve += binomialCoeff(n-1, i)*pow(((float)1-t.getPValue()),n-1-i)
-                *pow((float)t.getPValue(),i)*(pointList[i+1]-pointList[i]);
-    }
-    return n*curve;
+
+void CourbeParametrique::setStart(const Point & p)
+{
+    pointList[0] = p;
 }
 
-//implémentation de la fonction factorielle
-int CourbeParametrique::recursiveFact(int value)
+void CourbeParametrique::setEnd(const Point & p)
 {
-    if(value == 0) return 1;
-    else return value*recursiveFact(value-1);
+    pointList[1] = p;
 }
 
-//implémentation du calcul du coefficient binomial
-int CourbeParametrique::binomialCoeff(int end, int start)
+Point CourbeParametrique::getStart() const
 {
-    return (recursiveFact(end))/((recursiveFact(end-1)*recursiveFact(start)));
+    return start;
+}
+
+Point CourbeParametrique::getEnd() const
+{
+    return end;
+}
+
+Point CourbeParametrique::getPointList(int index){
+    return pointList[index];
+}
+
+Point CourbeParametrique::getCtrlPointList(int index){
+    return ctrlPointList[index];
+}
+
+int CourbeParametrique::getOrder(){
+    return n;
 }

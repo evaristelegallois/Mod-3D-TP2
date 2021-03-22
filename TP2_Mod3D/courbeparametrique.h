@@ -4,25 +4,31 @@
 #define COURBEPARAMETRIQUE_H
 
 #include "parametre.h"
-
+#include "point.h"
 
 class CourbeParametrique
 {
 public:
-    CourbeParametrique();
-    CourbeParametrique(Parametre t, int n);
+    CourbeParametrique(Point start, Point end, Point pointList[], int n);
+    ~CourbeParametrique();
 
-    int recursiveFact(int value);
-    int binomialCoeff(int end, int start);
+    void setStart(const Point&);
+    void setEnd(const Point&);
 
-    float derivedBezierCurve(float pointList[]);
-    float bezierCurve(float pointList[]);
-    void discretizeBezierCurve();
+    Point getStart() const;
+    Point getEnd() const;
+    int getOrder(); //degré de la courbe
+
+    Point getPointList(int index);
+    Point getCtrlPointList(int index);
 
 private:
-    Parametre t;
-    int n;
 
+    Point start;
+    Point end;
+    Point * ctrlPointList;
+    Point * pointList;
+    int n; //degré de la courbe
 };
 
 #endif // COURBEPARAMETRIQUE_H

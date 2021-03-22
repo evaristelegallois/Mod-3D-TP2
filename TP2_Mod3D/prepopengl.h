@@ -10,17 +10,18 @@
 #include "discretisation.h"
 #include "segment.h"
 #include "parametre.h"
+#include "courbeparametrique.h"
 
 class PrepOpenGL
 {
 
 private:
     QOpenGLBuffer m_vbo;
-    Discretisation* m_discr;
-    GLfloat* m_colors;
+    Discretisation * d;
+    bool isSegment;
 
 public:
-    PrepOpenGL(Discretisation* d, GLfloat* m_colors);
+    PrepOpenGL(Discretisation * d, bool isSegment = true);
 
     void buildVertData(QVector<GLfloat> &data);
     QVector<GLfloat> tableToVBO(int step, float * tablePoint);

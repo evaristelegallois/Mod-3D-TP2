@@ -124,6 +124,28 @@ void myOpenGLWidget::makeGLObjects()
     vbo2 = new PrepOpenGL(d, colors);
 
 
+
+    Point C, D;
+
+    coord[0] = 0.5f;
+    coord[1] = 2.0f;
+    coord[2] = 0.0f;
+    C.set(coord);
+
+    coord[0] = 1.0f;
+    coord[1] = 1.5f;
+    coord[2] = 0.0f;
+    D.set(coord);
+
+    Point *ctrlPointList = new Point[2];
+    ctrlPointList[0] = C;
+    ctrlPointList[1] = D;
+
+    courbe = new CourbeParametrique(A, B, ctrlPointList, 3);
+    d = new Discretisation(*courbe, 0);
+    vbo1 = new PrepOpenGL(d, false);
+
+
     delete [] coord;
 
 }

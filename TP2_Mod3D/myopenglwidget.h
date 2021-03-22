@@ -51,6 +51,7 @@ private:
     double m_ratio = 1;
 
     Segment * segment;
+    CourbeParametrique * courbe;
     Discretisation * d;
     Parametre p;
 

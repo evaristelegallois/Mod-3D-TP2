@@ -13,3 +13,8 @@ Parametre::Parametre(float p) : m_par(p)
 float Parametre::getPValue(){
     return m_par;
 }
+
+void Parametre::setPValue(float p){
+    m_par = p;
+}
+
