@@ -1,3 +1,5 @@
+/*THIEL Samantha, PAREL Gabriel, M1 Informatique - TP2 Modélisation de surfaces 3D (22/03/2021)*/
+
 #include "discretisation.h"
 #include<QDebug>
 
@@ -29,7 +31,10 @@ Point Discretisation::getValue(Parametre p)
 
 }
 
-//fonction de discretisation
+/**
+ * @brief Discretisation::segmentToTable : fonction de discrétisation d'un segment
+ * @return le segment sous forme de tableau de floats
+ */
 float* Discretisation::segmentToTable()
 {
    for(int i = 0; i<(int)p.getPValue(); i++)
@@ -40,8 +45,6 @@ float* Discretisation::segmentToTable()
 
        qDebug() << "tablepoint segment" << tablePoint[3*i];
    }
-
-
    return tablePoint;
 }
 
@@ -50,5 +53,18 @@ float Discretisation::getP()
     return p.getPValue();
 }
 
+
+void Discretisation::courbeBezier(Point P0){
+
+    float deltaT = 0.1;
+    float t = 0.0;
+
+    float seuilBas = 0.1;  //seuil minimal de déviation
+    float seuilHaut = 0.9;  //seuil maximal de déviation
+
+    while(t < 1){
+
+    }
+}
 
 

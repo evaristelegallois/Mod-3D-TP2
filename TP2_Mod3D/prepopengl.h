@@ -1,3 +1,5 @@
+/*THIEL Samantha, PAREL Gabriel, M1 Informatique - TP2 Modélisation de surfaces 3D (22/03/2021)*/
+
 #ifndef PREPOPENGL_H
 #define PREPOPENGL_H
 
@@ -14,10 +16,11 @@ class PrepOpenGL
 
 private:
     QOpenGLBuffer m_vbo;
-    Discretisation * d;
+    Discretisation* m_disc;
+    GLfloat* m_colors;
 
 public:
-    PrepOpenGL(Discretisation * d);
+    PrepOpenGL(Discretisation* d, GLfloat* m_colors);
 
     void buildVertData(QVector<GLfloat> &data);
     QVector<GLfloat> tableToVBO(int step, float * tablePoint);

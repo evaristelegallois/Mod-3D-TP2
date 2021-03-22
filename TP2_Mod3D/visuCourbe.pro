@@ -27,6 +27,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += \
+    courbeparametrique.cpp \
     discretisation.cpp \
         main.cpp \
         mainwindow.cpp \
@@ -37,6 +38,7 @@ SOURCES += \
     point.cpp
 
 HEADERS += \
+    courbeparametrique.h \
     discretisation.h \
         mainwindow.h \
     myopenglwidget.h \

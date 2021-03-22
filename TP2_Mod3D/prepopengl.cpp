@@ -1,6 +1,8 @@
+/*THIEL Samantha, PAREL Gabriel, M1 Informatique - TP2 Modélisation de surfaces 3D (22/03/2021)*/
+
 #include "prepopengl.h"
 
-PrepOpenGL::PrepOpenGL(Discretisation * d) : d(d)
+PrepOpenGL::PrepOpenGL(Discretisation * d, GLfloat* colors) : m_disc(d), m_colors(colors)
 {
     m_vbo.create();
     m_vbo.bind();
@@ -22,7 +24,7 @@ QVector<GLfloat> PrepOpenGL::tableToVBO(int step, float * tablePoint)
     GLfloat * colors = new GLfloat[step*3]; //1 couleur (RBG) par sommet
 
     //Point begin, end;
-    tablePoint = d->segmentToTable();
+    tablePoint = m_disc->segmentToTable();
     float * values = tablePoint;
 
     for (int i=0; i<step*3; ++i){
@@ -35,10 +37,11 @@ QVector<GLfloat> PrepOpenGL::tableToVBO(int step, float * tablePoint)
 
     delete[] values;
 
+    //couleur
     for (int i =0; i<step; i++){
-        colors[i*3] = 1.0;
-        colors[i*3+1] = 0.0;
-        colors[i*3+2] = 0.0;
+        colors[i*3]   = m_colors[0];
+        colors[i*3+1] = m_colors[1];
+        colors[i*3+2] = m_colors[2];
     }
 
     //3 spécialisation OpenGL
@@ -70,7 +73,7 @@ void PrepOpenGL::draw(QOpenGLShaderProgram *program, QOpenGLFunctions *glFuncs)
     program->enableAttributeArray("posAttr");
     program->enableAttributeArray("colAttr");
 
-    for(int i=0; i < (int)d->getP(); i++){
+    for(int i=0; i < (int)m_disc->getP(); i++){
 
         // Pour des questions de portabilité, hors de la classe GLArea, tous les appels
         // aux fonctions glBidule doivent être préfixés par glFuncs->.
@@ -95,7 +98,7 @@ void PrepOpenGL::drawPoints(QOpenGLShaderProgram *program, QOpenGLFunctions *glF
     program->enableAttributeArray("posAttr");
     program->enableAttributeArray("colAttr");
 
-    for(int i=0; i < (int)d->getP(); i++){
+    for(int i=0; i < (int)m_disc->getP(); i++){
 
         // Pour des questions de portabilité, hors de la classe GLArea, tous les appels
         // aux fonctions glBidule doivent être préfixés par glFuncs->.

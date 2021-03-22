@@ -1,4 +1,4 @@
-/*THIEL Samantha, PAREL Gabriel, M1 Informatique - TP1 Modélisation de surfaces 3D (05/03/2021)*/
+/*THIEL Samantha, PAREL Gabriel, M1 Informatique - TP2 Modélisation de surfaces 3D (22/03/2021)*/
 
 //R. Raffin, M1 Informatique, "Surfaces 3D"
 //tiré de CC-BY Edouard.Thiel@univ-amu.fr - 22/01/2019
@@ -79,57 +79,49 @@ void myOpenGLWidget::doProjection()
 
 void myOpenGLWidget::makeGLObjects()
 {
-    //1 Nos objets géométriques
+    //objets géométriques
     Point A, B;
     float * coord = new float[3];
+    GLfloat * colors = new GLfloat[3]; //1 couleur (RBG) par sommet
 
-    coord[0] = 0.0f;
-    coord[1] = 0.0f;
-    coord[2] = 0.0f;
+    coord[0] = 0.0f; coord[1] = 0.0f; coord[2] = 0.0f;
     A.set(coord);
 
-    coord[0] = 1.0f;
-    coord[1] = 0.0f;
-    coord[2] = 0.0f;
+    coord[0] = 1.0f; coord[1] = 0.0f; coord[2] = 0.0f;
     B.set(coord);
 
     int step = 4;
     segment = new Segment(step, A, B);
     p = (float) step;
     d = new Discretisation(*segment, p);
-    vbo0 = new PrepOpenGL(d);
+    colors[0] = 1.0f; colors[1] = 0.0f; colors[2] = 0.0f;
+    vbo0 = new PrepOpenGL(d, colors);
 
-    coord[0] = 0.5f;
-    coord[1] = 2.0f;
-    coord[2] = 0.0f;
+    coord[0] = 0.5f; coord[1] = 2.0f; coord[2] = 0.0f;
     A.set(coord);
 
-    coord[0] = 1.0f;
-    coord[1] = 1.5f;
-    coord[2] = 0.0f;
+    coord[0] = 1.0f; coord[1] = 1.5f; coord[2] = 0.0f;
     B.set(coord);
 
     step = 8;
     segment = new Segment(step, A, B);
     p = (float) step;
     d = new Discretisation(*segment, p);
-    vbo1 = new PrepOpenGL(d);
+    colors[0] = 0.0f; colors[1] = 1.0f; colors[2] = 0.0f;
+    vbo1 = new PrepOpenGL(d, colors);
 
-    coord[0] = 0.5f;
-    coord[1] = 1.0f;
-    coord[2] = 0.0f;
+    coord[0] = 0.5f; coord[1] = 1.0f; coord[2] = 0.0f;
     A.set(coord);
 
-    coord[0] = 2.0f;
-    coord[1] = 0.5f;
-    coord[2] = 0.0f;
+    coord[0] = 2.0f; coord[1] = 0.5f; coord[2] = 0.0f;
     B.set(coord);
 
     step = 6;
     segment = new Segment(step, A, B);
     p = (float) step;
     d = new Discretisation(*segment, p);
-    vbo2 = new PrepOpenGL(d);
+    colors[0] = 0.0f; colors[1] = 0.0f; colors[2] = 1.0f;
+    vbo2 = new PrepOpenGL(d, colors);
 
 
     delete [] coord;
