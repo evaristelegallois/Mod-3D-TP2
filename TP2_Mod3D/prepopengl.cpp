@@ -2,8 +2,7 @@
 
 #include "prepopengl.h"
 
-PrepOpenGL::PrepOpenGL(Discretisation * d, GLfloat* colors) : m_disc(d), m_colors(colors)
-{
+PrepOpenGL::PrepOpenGL(Discretisation * d, GLfloat* colors) : m_discr(d), m_colors(colors){
     m_vbo.create();
     m_vbo.bind();
     QVector<GLfloat> vertData;
@@ -13,8 +12,8 @@ PrepOpenGL::PrepOpenGL(Discretisation * d, GLfloat* colors) : m_disc(d), m_color
 }
 
 
-QVector<GLfloat> PrepOpenGL::tableToVBO(int step, float * tablePoint)
-{
+QVector<GLfloat> PrepOpenGL::tableToVBO(int step, float * tablePoint){
+
     //Votre composant de traduction "sortie de discrétisation" ->
     //"structures OpenGL" doit pouvoir faire ce choix (GL_Lines, Points ou Triangles)
 
@@ -24,7 +23,7 @@ QVector<GLfloat> PrepOpenGL::tableToVBO(int step, float * tablePoint)
     GLfloat * colors = new GLfloat[step*3]; //1 couleur (RBG) par sommet
 
     //Point begin, end;
-    tablePoint = m_disc->segmentToTable();
+    tablePoint = m_discr->segmentToTable();
     float * values = tablePoint;
 
     for (int i=0; i<step*3; ++i){
@@ -62,8 +61,8 @@ QVector<GLfloat> PrepOpenGL::tableToVBO(int step, float * tablePoint)
 
 }
 
-void PrepOpenGL::draw(QOpenGLShaderProgram *program, QOpenGLFunctions *glFuncs)
-{
+void PrepOpenGL::draw(QOpenGLShaderProgram *program, QOpenGLFunctions *glFuncs){
+
     m_vbo.bind();
 
     program->setAttributeBuffer("posAttr",
@@ -73,7 +72,7 @@ void PrepOpenGL::draw(QOpenGLShaderProgram *program, QOpenGLFunctions *glFuncs)
     program->enableAttributeArray("posAttr");
     program->enableAttributeArray("colAttr");
 
-    for(int i=0; i < (int)m_disc->getP(); i++){
+    for(int i=0; i < (int)m_discr->getP(); i++){
 
         // Pour des questions de portabilité, hors de la classe GLArea, tous les appels
         // aux fonctions glBidule doivent être préfixés par glFuncs->.
@@ -87,8 +86,8 @@ void PrepOpenGL::draw(QOpenGLShaderProgram *program, QOpenGLFunctions *glFuncs)
     m_vbo.release();
 }
 
-void PrepOpenGL::drawPoints(QOpenGLShaderProgram *program, QOpenGLFunctions *glFuncs)
-{
+void PrepOpenGL::drawPoints(QOpenGLShaderProgram *program, QOpenGLFunctions *glFuncs){
+
     m_vbo.bind();
 
     program->setAttributeBuffer("posAttr",
@@ -98,7 +97,7 @@ void PrepOpenGL::drawPoints(QOpenGLShaderProgram *program, QOpenGLFunctions *glF
     program->enableAttributeArray("posAttr");
     program->enableAttributeArray("colAttr");
 
-    for(int i=0; i < (int)m_disc->getP(); i++){
+    for(int i=0; i < (int)m_discr->getP(); i++){
 
         // Pour des questions de portabilité, hors de la classe GLArea, tous les appels
         // aux fonctions glBidule doivent être préfixés par glFuncs->.

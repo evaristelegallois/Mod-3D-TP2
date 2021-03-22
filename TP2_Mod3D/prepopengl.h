@@ -16,7 +16,7 @@ class PrepOpenGL
 
 private:
     QOpenGLBuffer m_vbo;
-    Discretisation* m_disc;
+    Discretisation* m_discr;
     GLfloat* m_colors;
 
 public:
