@@ -2,7 +2,7 @@
 
 #include "prepopengl.h"
 
-PrepOpenGL::PrepOpenGL(Discretisation * d, bool isSegment) : d(d), isSegment(isSegment)
+PrepOpenGL::PrepOpenGL(Discretisation * d, GLfloat* color, bool isSegment) : d(d), m_color(color), isSegment(isSegment)
 {
     m_vbo.create();
     m_vbo.bind();
@@ -43,9 +43,9 @@ QVector<GLfloat> PrepOpenGL::tableToVBO(int step, float * tablePoint)
     delete[] values;
 
     for (int i =0; i<step; i++){
-        colors[i*3] = 1.0;
-        colors[i*3+1] = 0.0;
-        colors[i*3+2] = 0.0;
+        colors[i*3] = m_color[0];
+        colors[i*3+1] = m_color[1];
+        colors[i*3+2] = m_color[2];
     }
 
     //3 spécialisation OpenGL

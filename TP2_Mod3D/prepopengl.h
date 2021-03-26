@@ -19,9 +19,10 @@ private:
     QOpenGLBuffer m_vbo;
     Discretisation * d;
     bool isSegment;
+    GLfloat* m_color;
 
 public:
-    PrepOpenGL(Discretisation * d, bool isSegment = true);
+    PrepOpenGL(Discretisation * d, GLfloat* color, bool isSegment = true);
 
     void buildVertData(QVector<GLfloat> &data);
     QVector<GLfloat> tableToVBO(int step, float * tablePoint);

@@ -84,6 +84,7 @@ void myOpenGLWidget::makeGLObjects()
     float * coord = new float[3];
     GLfloat * colors = new GLfloat[3]; //1 couleur (RBG) par sommet
 
+    ///////segment 1
     coord[0] = 0.0f; coord[1] = 0.0f; coord[2] = 0.0f;
     A.set(coord);
 
@@ -103,6 +104,7 @@ void myOpenGLWidget::makeGLObjects()
     coord[0] = 1.0f; coord[1] = 1.5f; coord[2] = 0.0f;
     B.set(coord);
 
+    ///////segment 2
     step = 8;
     segment = new Segment(step, A, B);
     p = (float) step;
@@ -124,17 +126,13 @@ void myOpenGLWidget::makeGLObjects()
     vbo2 = new PrepOpenGL(d, colors);
 
 
-
+    ///////courbe de Bézier
     Point C, D;
 
-    coord[0] = 0.5f;
-    coord[1] = 2.0f;
-    coord[2] = 0.0f;
+    coord[0] = -1.0f; coord[1] = 2.0f; coord[2] = 0.0f;
     C.set(coord);
 
-    coord[0] = 1.0f;
-    coord[1] = 1.5f;
-    coord[2] = 0.0f;
+    coord[0] = 1.0f; coord[1] = 1.5f; coord[2] = 0.0f;
     D.set(coord);
 
     Point *ctrlPointList = new Point[2];
@@ -143,7 +141,8 @@ void myOpenGLWidget::makeGLObjects()
 
     courbe = new CourbeParametrique(A, B, ctrlPointList, 3);
     d = new Discretisation(*courbe, 0);
-    vbo1 = new PrepOpenGL(d, false);
+    colors[0] = 0.0f; colors[1] = 1.0f; colors[2] = 0.0f;
+    vbo1 = new PrepOpenGL(d, colors, false);
 
 
     delete [] coord;
