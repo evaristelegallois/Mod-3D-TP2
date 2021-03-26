@@ -12,8 +12,7 @@ CourbeParametrique::CourbeParametrique(Point start, Point end, Point ctrlPointLi
     this->setEnd(end);
 }
 
-CourbeParametrique::~CourbeParametrique()
-{
+CourbeParametrique::~CourbeParametrique(){
     delete [] pointList;
     pointList = nullptr;
 }

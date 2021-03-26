@@ -31,7 +31,7 @@ private:
     Segment segment;
     CourbeParametrique courbe;
     Parametre p;
-    float * tablePoint;
+    float * tablePoint = nullptr;
     int compteur;
 
 };
