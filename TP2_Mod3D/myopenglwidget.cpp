@@ -95,11 +95,11 @@ void myOpenGLWidget::makeGLObjects()
     coord[0] = 1.5f; coord[1] = 1.5f; coord[2] = 0.0f;
     P2.set(coord);
 
-    coord[0] = 2.0f; coord[1] = 0.0f; coord[2] = 0.0f;
+    coord[0] = 2.3f; coord[1] = 0.0f; coord[2] = 0.0f;
     P3.set(coord);
 
     ///////segment 1
-    int step = 20;
+    int step = 400;
     segment = new Segment(step, P0, P1);
     p = (float) step;
     d = new Discretisation(*segment, p);
@@ -115,7 +115,7 @@ void myOpenGLWidget::makeGLObjects()
     vbo1 = new PrepOpenGL(d, colors);
 
     ///////segment 3
-    //step = 6;
+    //step = 10;
     segment = new Segment(step, P2, P3);
     //p = (float) step;
     d = new Discretisation(*segment, p);
@@ -191,6 +191,7 @@ void myOpenGLWidget::paintGL()
     vbo0->draw(m_program, glFuncs);
     vbo1->draw(m_program, glFuncs);
     vbo2->draw(m_program, glFuncs);
+
     //courbe de Bézier
     vbo3->drawPoints(m_program, glFuncs);
 

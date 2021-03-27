@@ -40,10 +40,10 @@ Point Discretisation::getValueFromSegment(Parametre p){
  * @brief Discretisation::segmentToTable : fonction de discrétisation d'un segment
  * @return le segment sous forme de tableau de floats
  */
-float* Discretisation::segmentToTable()
-{
-   for(int i = 0; i<(int)p.getPValue(); i++)
-   {
+float* Discretisation::segmentToTable(){
+
+   for(int i = 0; i<(int)p.getPValue(); i++){
+
        tablePoint[3*i]   = getValueFromSegment((float) i/p.getPValue()).getX();
        tablePoint[1+3*i] = getValueFromSegment((float) i/p.getPValue()).getY();
        tablePoint[2+3*i] = getValueFromSegment((float) i/p.getPValue()).getZ();
@@ -135,8 +135,6 @@ float * Discretisation::bezierToTable(){
                 tablePoint[3*i]   = getValueFromBezierCurve((float) i/p.getPValue()).getX();
                 tablePoint[1+3*i] = getValueFromBezierCurve((float) i/p.getPValue()).getY();
                 tablePoint[2+3*i] = getValueFromBezierCurve((float) i/p.getPValue()).getZ();
-
-                //p.setPValue(t+deltaT);
 
                 t += deltaT;
             }

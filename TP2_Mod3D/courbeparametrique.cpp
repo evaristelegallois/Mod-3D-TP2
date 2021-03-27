@@ -6,7 +6,7 @@
 CourbeParametrique::CourbeParametrique(Point start, Point end, Point ctrlPointList[], int n):
     start(start), end(end), ctrlPointList(ctrlPointList), n(n)
 {
-    //t entre 0 et 1 !!!!!
+    //t entre 0 et 1
     pointList = new Point[2]; //liste de points
     this->setStart(start);
     this->setEnd(end);

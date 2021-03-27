@@ -28,7 +28,7 @@ private:
     Point end;
     Point * ctrlPointList;
     Point * pointList;
-    int n; //degré de la courbe
+    int n; //degré de la courbe (nombre de points de contrôles - 1)
 };
 
 #endif // COURBEPARAMETRIQUE_H
