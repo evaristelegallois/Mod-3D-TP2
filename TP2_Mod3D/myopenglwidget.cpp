@@ -80,69 +80,57 @@ void myOpenGLWidget::doProjection()
 void myOpenGLWidget::makeGLObjects()
 {
     //objets géométriques
-    Point A, B;
+    //points de contrôle
+    Point P0, P1, P2, P3;
     float * coord = new float[3];
     GLfloat * colors = new GLfloat[3]; //1 couleur (RBG) par sommet
 
-    ///////segment 1
+    //coordonnées des points de contrôle x, y, z
     coord[0] = 0.0f; coord[1] = 0.0f; coord[2] = 0.0f;
-    A.set(coord);
+    P0.set(coord);
 
-    coord[0] = 1.0f; coord[1] = 0.0f; coord[2] = 0.0f;
-    B.set(coord);
+    coord[0] = 0.5f; coord[1] = 1.5f; coord[2] = 0.0f;
+    P1.set(coord);
 
-    int step = 4;
-    segment = new Segment(step, A, B);
+    coord[0] = 1.5f; coord[1] = 1.5f; coord[2] = 0.0f;
+    P2.set(coord);
+
+    coord[0] = 2.0f; coord[1] = 0.0f; coord[2] = 0.0f;
+    P3.set(coord);
+
+    ///////segment 1
+    int step = 20;
+    segment = new Segment(step, P0, P1);
     p = (float) step;
     d = new Discretisation(*segment, p);
     colors[0] = 1.0f; colors[1] = 0.0f; colors[2] = 0.0f;
     vbo0 = new PrepOpenGL(d, colors);
 
-    coord[0] = 0.5f; coord[1] = 2.0f; coord[2] = 0.0f;
-    A.set(coord);
-
-    coord[0] = 1.0f; coord[1] = 1.5f; coord[2] = 0.0f;
-    B.set(coord);
-
     ///////segment 2
-    step = 8;
-    segment = new Segment(step, A, B);
-    p = (float) step;
+    //step = 8;
+    segment = new Segment(step, P1, P2);
+    //p = (float) step;
     d = new Discretisation(*segment, p);
-    colors[0] = 0.0f; colors[1] = 1.0f; colors[2] = 0.0f;
+    //colors[0] = 0.0f; colors[1] = 1.0f; colors[2] = 0.0f;
     vbo1 = new PrepOpenGL(d, colors);
 
-    coord[0] = 0.5f; coord[1] = 1.0f; coord[2] = 0.0f;
-    A.set(coord);
-
-    coord[0] = 2.0f; coord[1] = 0.5f; coord[2] = 0.0f;
-    B.set(coord);
-
-    step = 6;
-    segment = new Segment(step, A, B);
-    p = (float) step;
+    ///////segment 3
+    //step = 6;
+    segment = new Segment(step, P2, P3);
+    //p = (float) step;
     d = new Discretisation(*segment, p);
-    colors[0] = 0.0f; colors[1] = 0.0f; colors[2] = 1.0f;
+    //colors[0] = 0.0f; colors[1] = 0.0f; colors[2] = 1.0f;
     vbo2 = new PrepOpenGL(d, colors);
 
-
     ///////courbe de Bézier
-    Point C, D;
+    Point *ctrlPointList = new Point[2];  //liste des points de contrôle de la courbe
+    ctrlPointList[0] = P2;
+    ctrlPointList[1] = P3;
 
-    coord[0] = -1.0f; coord[1] = 2.0f; coord[2] = 0.0f;
-    C.set(coord);
-
-    coord[0] = 1.0f; coord[1] = 1.5f; coord[2] = 0.0f;
-    D.set(coord);
-
-    Point *ctrlPointList = new Point[2];
-    ctrlPointList[0] = C;
-    ctrlPointList[1] = D;
-
-    courbe = new CourbeParametrique(A, B, ctrlPointList, 3);
+    courbe = new CourbeParametrique(P0, P1, ctrlPointList, 3);
     d = new Discretisation(*courbe, 0);
     colors[0] = 0.0f; colors[1] = 1.0f; colors[2] = 0.0f;
-    vbo1 = new PrepOpenGL(d, colors, false);
+    vbo3 = new PrepOpenGL(d, colors, false);
 
 
     delete [] coord;
@@ -188,7 +176,8 @@ void myOpenGLWidget::paintGL()
         m_projection.setToIdentity ();
         m_projection.perspective(70.0, width() / height(), 0.1, 100.0); //ou m_ratio
 
-        //m_model.translate(0, 0, -3.0);
+        //centrer la vue sur les éléments géométriques dessinés
+        m_model.translate(-0.35, -0.2, 0);
 
         // Rotation de la scène pour l'animation
         m_model.rotate(m_angle, 0, 1, 0);
@@ -198,10 +187,12 @@ void myOpenGLWidget::paintGL()
 
     m_program->setUniformValue("matrix", m);
 
+    //segments
     vbo0->draw(m_program, glFuncs);
-    vbo1->drawPoints(m_program, glFuncs);
-    //segment1->draw(m_program, glFuncs, segment1->getStep());
-    vbo2->drawPoints(m_program, glFuncs);
+    vbo1->draw(m_program, glFuncs);
+    vbo2->draw(m_program, glFuncs);
+    //courbe de Bézier
+    vbo3->drawPoints(m_program, glFuncs);
 
     m_program->release();
 }

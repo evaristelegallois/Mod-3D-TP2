@@ -58,6 +58,7 @@ private:
     PrepOpenGL * vbo0;
     PrepOpenGL * vbo1;
     PrepOpenGL * vbo2;
+    PrepOpenGL * vbo3;
 
     //RR matrices utiles
     QMatrix4x4 m_modelView;

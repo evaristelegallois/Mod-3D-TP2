@@ -26,8 +26,6 @@ QVector<GLfloat> PrepOpenGL::tableToVBO(int step, float * tablePoint)
     GLfloat * vertices = new GLfloat[step*3]; //nb de sommets dépendant de la discrétisation
     GLfloat * colors = new GLfloat[step*3]; //1 couleur (RBG) par sommet
 
-    //Point begin, end;
-
     if (isSegment) tablePoint = d->segmentToTable();
     else tablePoint = d->bezierToTable();
     float * values = tablePoint;
@@ -36,9 +34,6 @@ QVector<GLfloat> PrepOpenGL::tableToVBO(int step, float * tablePoint)
         vertices[i] = tablePoint[i];
         qDebug() << "tablePoint" << tablePoint[i];
     }
-
-    /*for (int i=0; i<step*3; ++i)
-        vertices[3+i] = tablePoint[i];*/
 
     delete[] values;
 
@@ -77,12 +72,12 @@ void PrepOpenGL::draw(QOpenGLShaderProgram *program, QOpenGLFunctions *glFuncs){
     program->enableAttributeArray("posAttr");
     program->enableAttributeArray("colAttr");
 
-    for(int i=0; i < (int)d->getP(); i++){
+    for(int i=0; i < (int)d->getP()*2; i++){
 
         // Pour des questions de portabilité, hors de la classe GLArea, tous les appels
         // aux fonctions glBidule doivent être préfixés par glFuncs->.
         glPointSize(5.0f);
-        glFuncs->glDrawArrays(GL_LINES, i, 2);
+        glFuncs->glDrawArrays(GL_LINE_STRIP, i, 2);
     }
 
     program->disableAttributeArray("posAttr");
@@ -107,7 +102,7 @@ void PrepOpenGL::drawPoints(QOpenGLShaderProgram *program, QOpenGLFunctions *glF
         // Pour des questions de portabilité, hors de la classe GLArea, tous les appels
         // aux fonctions glBidule doivent être préfixés par glFuncs->.
         glPointSize(5.0f);
-        glFuncs->glDrawArrays(GL_POINTS, i, 2);
+        glFuncs->glDrawArrays(GL_POINTS, i, 1);
     }
 
     program->disableAttributeArray("posAttr");
