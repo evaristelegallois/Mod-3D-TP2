@@ -1,4 +1,4 @@
-/*THIEL Samantha, PAREL Gabriel, M1 Informatique - TP2 Modélisation de surfaces 3D (22/03/2021)*/
+/*THIEL Samantha, PAREL Gabriel, M1 Informatique - Projet Modélisation de surfaces 3D (22/03/2021)*/
 
 //R. Raffin, M1 Informatique, "Surfaces 3D"
 //tiré de CC-BY Edouard.Thiel@univ-amu.fr - 22/01/2019
@@ -99,27 +99,21 @@ void myOpenGLWidget::makeGLObjects()
     P3.set(coord);
 
     ///////segment 1
-    int step = 400;
-    segment = new Segment(step, P0, P1);
+    int step = 2;
     p = (float) step;
+    segment = new Segment(step, P0, P1);
     d = new Discretisation(*segment, p);
     colors[0] = 1.0f; colors[1] = 0.0f; colors[2] = 0.0f;
     vbo0 = new PrepOpenGL(d, colors);
 
     ///////segment 2
-    //step = 8;
     segment = new Segment(step, P1, P2);
-    //p = (float) step;
     d = new Discretisation(*segment, p);
-    //colors[0] = 0.0f; colors[1] = 1.0f; colors[2] = 0.0f;
     vbo1 = new PrepOpenGL(d, colors);
 
     ///////segment 3
-    //step = 10;
     segment = new Segment(step, P2, P3);
-    //p = (float) step;
     d = new Discretisation(*segment, p);
-    //colors[0] = 0.0f; colors[1] = 0.0f; colors[2] = 1.0f;
     vbo2 = new PrepOpenGL(d, colors);
 
     ///////courbe de Bézier
@@ -127,8 +121,10 @@ void myOpenGLWidget::makeGLObjects()
     ctrlPointList[0] = P2;
     ctrlPointList[1] = P3;
 
+    step = 10;
+    p = (float) step;
     courbe = new CourbeParametrique(P0, P1, ctrlPointList, 3);
-    d = new Discretisation(*courbe, 0);
+    d = new Discretisation(*courbe, step);
     colors[0] = 0.0f; colors[1] = 1.0f; colors[2] = 0.0f;
     vbo3 = new PrepOpenGL(d, colors, false);
 
@@ -188,9 +184,9 @@ void myOpenGLWidget::paintGL()
     m_program->setUniformValue("matrix", m);
 
     //segments
-    vbo0->draw(m_program, glFuncs);
-    vbo1->draw(m_program, glFuncs);
-    vbo2->draw(m_program, glFuncs);
+    vbo0->drawLines(m_program, glFuncs);
+    vbo1->drawLines(m_program, glFuncs);
+    vbo2->drawLines(m_program, glFuncs);
 
     //courbe de Bézier
     vbo3->drawPoints(m_program, glFuncs);

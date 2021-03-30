@@ -1,4 +1,4 @@
-/*THIEL Samantha, PAREL Gabriel, M1 Informatique - TP2 Modélisation de surfaces 3D (22/03/2021)*/
+/*THIEL Samantha, PAREL Gabriel, M1 Informatique - Projet Modélisation de surfaces 3D (22/03/2021)*/
 
 #ifndef PREPOPENGL_H
 #define PREPOPENGL_H
@@ -27,7 +27,7 @@ public:
     void buildVertData(QVector<GLfloat> &data);
     QVector<GLfloat> tableToVBO(int step, float * tablePoint);
 
-    void draw(QOpenGLShaderProgram *program, QOpenGLFunctions *glFuncs);
+    void drawLines(QOpenGLShaderProgram *program, QOpenGLFunctions *glFuncs);
     void drawPoints(QOpenGLShaderProgram *program, QOpenGLFunctions *glFuncs);
 };
 

@@ -1,4 +1,4 @@
-/*THIEL Samantha, PAREL Gabriel, M1 Informatique - TP2 Modélisation de surfaces 3D (22/03/2021)*/
+/*THIEL Samantha, PAREL Gabriel, M1 Informatique - Projet Modélisation de surfaces 3D (22/03/2021)*/
 
 /* R. Raffin
  * M1 Informatique, Aix-Marseille Université

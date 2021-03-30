@@ -1,4 +1,4 @@
-/*THIEL Samantha, PAREL Gabriel, M1 Informatique - TP2 Modélisation de surfaces 3D (22/03/2021)*/
+/*THIEL Samantha, PAREL Gabriel, M1 Informatique - Projet Modélisation de surfaces 3D (22/03/2021)*/
 
 #include "prepopengl.h"
 
@@ -61,7 +61,7 @@ QVector<GLfloat> PrepOpenGL::tableToVBO(int step, float * tablePoint)
 
 }
 
-void PrepOpenGL::draw(QOpenGLShaderProgram *program, QOpenGLFunctions *glFuncs){
+void PrepOpenGL::drawLines(QOpenGLShaderProgram *program, QOpenGLFunctions *glFuncs){
 
     m_vbo.bind();
 

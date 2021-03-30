@@ -1,4 +1,4 @@
-/*THIEL Samantha, PAREL Gabriel, M1 Informatique - TP2 Modélisation de surfaces 3D (22/03/2021)*/
+/*THIEL Samantha, PAREL Gabriel, M1 Informatique - Projet Modélisation de surfaces 3D (22/03/2021)*/
 
 #include "discretisation.h"
 #include<QDebug>
@@ -17,7 +17,7 @@ Discretisation::Discretisation(CourbeParametrique courbe, Parametre p): courbe(c
  * @param p un paramètre variant de 0 à 1 sur la longueur du segment
  * @return la position (Point) sur le segment en fonction du paramètre p
  */
-Point Discretisation::getValueFromSegment(Parametre p){
+/*Point Discretisation::getValueFromSegment(Parametre p){
 
     Point newPoint;
 
@@ -34,6 +34,20 @@ Point Discretisation::getValueFromSegment(Parametre p){
 
     qDebug() << "segment values " << newPoint.getX();
     return newPoint;
+}*/
+
+Point Discretisation::getValueFromSegment(Parametre p){
+
+    Point newPoint;
+    newPoint.setX((1-p.getPValue())*segment.getStart().getX() + p.getPValue()*segment.getEnd().getX());
+
+    newPoint.setY((1-p.getPValue())*segment.getStart().getY() + p.getPValue()*segment.getEnd().getY());
+
+    newPoint.setZ((1-p.getPValue())*segment.getStart().getZ() + p.getPValue()*segment.getEnd().getZ());
+
+
+    qDebug() << "segment values " << newPoint.getX();
+    return newPoint;
 }
 
 /**
@@ -42,15 +56,15 @@ Point Discretisation::getValueFromSegment(Parametre p){
  */
 float* Discretisation::segmentToTable(){
 
-   for(int i = 0; i<(int)p.getPValue(); i++){
+    for(int i = 0; i<(int)getP(); i++){
 
-       tablePoint[3*i]   = getValueFromSegment((float) i/p.getPValue()).getX();
-       tablePoint[1+3*i] = getValueFromSegment((float) i/p.getPValue()).getY();
-       tablePoint[2+3*i] = getValueFromSegment((float) i/p.getPValue()).getZ();
+        tablePoint[3*i]   = getValueFromSegment((float) i/(getP()-1)).getX();
+        tablePoint[1+3*i] = getValueFromSegment((float) i/(getP()-1)).getY();
+        tablePoint[2+3*i] = getValueFromSegment((float) i/(getP()-1)).getZ();
 
-       qDebug() << "tablepoint segment" << tablePoint[3*i];
-   }
-   return tablePoint;
+        qDebug() << "tablepoint segment" << tablePoint[3*i];
+    }
+    return tablePoint;
 }
 
 
@@ -135,6 +149,8 @@ float * Discretisation::bezierToTable(){
                 tablePoint[3*i]   = getValueFromBezierCurve((float) i/p.getPValue()).getX();
                 tablePoint[1+3*i] = getValueFromBezierCurve((float) i/p.getPValue()).getY();
                 tablePoint[2+3*i] = getValueFromBezierCurve((float) i/p.getPValue()).getZ();
+
+                qDebug() << "tablePointntntn" << tablePoint;
 
                 t += deltaT;
             }
