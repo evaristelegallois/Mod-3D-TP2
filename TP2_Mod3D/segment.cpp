@@ -9,7 +9,7 @@ Segment::Segment()
     pointList = new Point[2];
 }
 
-Segment::Segment(int step, Point start, Point end): step(step), start(start), end(end)
+Segment::Segment(Point start, Point end): start(start), end(end)
 {
     pointList = new Point[2]; //liste de points
     this->setStart(start);
@@ -18,27 +18,47 @@ Segment::Segment(int step, Point start, Point end): step(step), start(start), en
 
 Segment::~Segment()
 {
-	delete [] pointList;
-	pointList = nullptr;
+    delete [] pointList;
+    pointList = nullptr;
 }
 
 Segment::Segment(const Segment & s)
 {
-	pointList = new Point[2];
+    pointList = new Point[2];
 
-	for (unsigned i=0; i<2; ++i)
+    for (unsigned i=0; i<2; ++i)
         pointList[i] = s.pointList[i];
 
 }
 
+
+/**
+ * @brief Discretisation::getValueFromSegment
+ * @param p un paramètre variant de 0 à 1 sur la longueur du segment
+ * @return la position (Point) sur le segment en fonction du paramètre p
+ */
+Point Segment::getValueFromSegment(float p){
+
+    Point newPoint;
+    newPoint.setX((1-p)*this->getStart().getX() + p*this->getEnd().getX());
+
+    newPoint.setY((1-p)*this->getStart().getY() + p*this->getEnd().getY());
+
+    newPoint.setZ((1-p)*this->getStart().getZ() + p*this->getEnd().getZ());
+
+
+    qDebug() << "segment values " << newPoint.getX();
+    return newPoint;
+}
+
 void Segment::setStart(const Point & p)
 {
-	pointList[0] = p;
+    pointList[0] = p;
 }
 
 void Segment::setEnd(const Point & p)
 {
-	pointList[1] = p;
+    pointList[1] = p;
 }
 
 /**
@@ -48,9 +68,9 @@ void Segment::setEnd(const Point & p)
  */
 void Segment::setN(unsigned r, const Point & p)
 {
-	if (r>1)
-		r=1;
-	pointList[r] = p;
+    if (r>1)
+        r=1;
+    pointList[r] = p;
 }
 
 /**
@@ -60,27 +80,24 @@ void Segment::setN(unsigned r, const Point & p)
  */
 Point Segment::getN(unsigned r) const
 {
-	if (r>1)
-		r=1;
+    if (r>1)
+        r=1;
 
-	return pointList[r];
+    return pointList[r];
 }
 
 Point Segment::getStart() const
 {
-	return getN(0);
+    return getN(0);
 }
 
 
 Point Segment::getEnd() const
 {
-	return getN(1);
+    return getN(1);
 }
 
-int Segment::getStep() const
-{
-    return step;
-}
+
 
 Point Segment::getPointList(int index){
     return pointList[index];
@@ -88,24 +105,23 @@ Point Segment::getPointList(int index){
 
 float Segment::length() const
 {
-	float res=0.0f;
+    float res=0.0f;
 
-	for (unsigned i=0; i<3; ++i)
-		res += pow((pointList[1]).getN(i) - (pointList[0]).getN(i), 2.0f);
+    for (unsigned i=0; i<3; ++i)
+        res += pow((pointList[1]).getN(i) - (pointList[0]).getN(i), 2.0f);
 
-	return sqrt(res);
+    return sqrt(res);
 }
 
 Segment& Segment::operator= (const Segment &s)
 {
-	for (unsigned i=0; i<2; ++i)
-		pointList[i] = s.pointList[i];
+    for (unsigned i=0; i<2; ++i)
+        pointList[i] = s.pointList[i];
 
     return *this;
 }
 
 std::ostream& operator<<(std::ostream& out, const Segment& s)
 {
-	return out << s.pointList[0] << " -- " << s.pointList[1];
+    return out << s.pointList[0] << " -- " << s.pointList[1];
 }
-

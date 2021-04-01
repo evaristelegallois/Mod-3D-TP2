@@ -1,77 +1,87 @@
 /*THIEL Samantha, PAREL Gabriel, M1 Informatique - Projet Modélisation de surfaces 3D (22/03/2021)*/
 
 #include "point.h"
+#include "QVector3D"
 
 Point::Point()
 {
-	coords = new float[3];
+    coords = new float[3];
 }
 
 Point::~Point()
 {
-	delete [] coords;
-	coords = nullptr;
+    delete [] coords;
+    coords = nullptr;
 }
 
 Point::Point(const Point& p)
 {
-	coords = new float[3];
-	for (unsigned i=0; i<3; ++i)
-		coords[i] = p.coords[i];
+    coords = new float[3];
+    for (unsigned i=0; i<3; ++i)
+        coords[i] = p.coords[i];
 }
 
 float Point::getX() const
 {
-	return getN(0);
+    return getN(0);
 }
 
 float Point::getY() const
 {
-	return getN(1);
+    return getN(1);
 }
 
 float Point::getZ() const
 {
-	return getN(2);
+    return getN(2);
 }
 
 void Point::get(float * t) const
 {
-	for (unsigned i=0; i<3; ++i)
-		t[i] = coords[i];
+    for (unsigned i=0; i<3; ++i)
+        t[i] = coords[i];
 }
 
 float Point::getN(unsigned r) const
 {
-	if (r>2)
-		r=2;
-	return coords[r] ;
+    if (r>2)
+        r=2;
+    return coords[r] ;
 }
 
 void Point::setN(unsigned r, const float & v)
 {
-	if (r>2)
-		r=2;
-	coords[r] = v;
+    if (r>2)
+        r=2;
+    coords[r] = v;
 }
 
 void Point::set(const float * t)
 {
-	for (unsigned i=0; i<3; ++i)
-		coords[i] = t[i];
+    for (unsigned i=0; i<3; ++i)
+        coords[i] = t[i];
+}
+
+Point Point::translate(float x , float y , float z)
+{
+    Point point;
+    point.setX(this->getX()+x);
+    point.setY(this->getY()+y);
+    point.setZ(this->getZ()+z);
+    return point;
 }
 
 void Point::setX(const float& v)
 {
-	setN(0, v);
+    setN(0, v);
 }
 void Point::setY(const float& v)
 {
-	setN(1, v);
+    setN(1, v);
 }
 void Point::setZ(const float& v)
 {
-	setN(2, v);
+    setN(2, v);
 }
 
 /**
@@ -81,8 +91,8 @@ void Point::setZ(const float& v)
  */
 Point& Point::operator= (const Point &p)
 {
-	for (unsigned i=0; i<3; ++i)
-		coords[i] = p.coords[i];
+    for (unsigned i=0; i<3; ++i)
+        coords[i] = p.coords[i];
 
     return *this;
 }
@@ -99,6 +109,15 @@ float* operator+ (const Point &p1, const Point &p2)
         somme[i] += p1.coords[i] + p2.coords[i];
 
     return somme;
+}
+
+QVector3D operator- (const Point &p1, const Point &p2)
+{
+    QVector3D point;
+    for (unsigned i=0; i<3; ++i)
+        point[i] = p1.coords[i] - p2.coords[i];
+
+    return point;
 }
 
 /**
@@ -123,5 +142,5 @@ float* operator* (const Point &p1, const Point &p2)
  */
 std::ostream& operator<<(std::ostream& out, const Point& p)
 {
-	return out << "[ " << p.coords[0] << " " << p.coords[1] << " " << p.coords[2] << " ]"; // can access private member Y::data
+    return out << "[ " << p.coords[0] << " " << p.coords[1] << " " << p.coords[2] << " ]"; // can access private member Y::data
 }

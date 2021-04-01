@@ -18,35 +18,34 @@
 class Segment
 {
 private:
-    int step;
     Point * pointList;
     Point start;
     Point end;
 
 public:
     Segment();
-    Segment(int step, Point start, Point end);
-	~Segment();
+    Segment(Point start, Point end);
+    ~Segment();
 
-	Segment(const Segment&);
+    Segment(const Segment&);
 
-	Segment& operator= (const Segment &);
+    Segment& operator= (const Segment &);
 
 
-	void setStart(const Point&);
-	void setEnd(const Point&);
+    void setStart(const Point&);
+    void setEnd(const Point&);
     void setN(unsigned, const Point&);  //spécifier l'un des 2 points "de contrôle"
 
     Point getN(unsigned) const;  //récupérer un des points "de contrôle" du segment, le 1er ou le 2e
-	Point getStart() const;
-	Point getEnd() const;
-    int getStep() const;
+    Point getStart() const;
+    Point getEnd() const;
+    Point getValueFromSegment(float p);
 
     Point getPointList(int index);
 
-	float length() const;
+    float length() const;
 
-	friend std::ostream& operator<<(std::ostream&, const Segment&);
+    friend std::ostream& operator<<(std::ostream&, const Segment&);
 
 };
 

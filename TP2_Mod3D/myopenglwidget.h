@@ -13,9 +13,9 @@
 #include <QOpenGLBuffer>
 #include <QOpenGLShaderProgram>
 
+#include "managevbo.h"
 #include "segment.h"
 #include "discretisation.h"
-#include "prepopengl.h"
 
 class myOpenGLWidget : public QOpenGLWidget,
                protected QOpenGLFunctions
@@ -30,20 +30,25 @@ public slots:
 
 signals:  // On ne les implémente pas, elles seront générées par MOC ;
           // les paramètres seront passés aux slots connectés.
+void radiusChanged(double newRadius);
 
 protected slots:
     void onTimeout();
+
 
 protected:
     void initializeGL() override;
     void doProjection();
     void resizeGL(int w, int h) override;
     void paintGL() override;
+    ManageVBO* create_vbo_segment(Point P0, Point P1);
+    ManageVBO* create_vbo_courbe(Point P0, Point P1);
     void keyPressEvent(QKeyEvent *ev) override;
     void keyReleaseEvent(QKeyEvent *ev) override;
     void mousePressEvent(QMouseEvent *ev) override;
     void mouseReleaseEvent(QMouseEvent *ev) override;
     void mouseMoveEvent(QMouseEvent *ev) override;
+    void setRadius(double radius);
 
 private:
     double m_angle = 0;
@@ -52,18 +57,17 @@ private:
 
     Segment * segment;
     CourbeParametrique * courbe;
-    Discretisation * d;
-    Parametre p;
-
-    PrepOpenGL * vbo0;
-    PrepOpenGL * vbo1;
-    PrepOpenGL * vbo2;
-    PrepOpenGL * vbo3;
+    Discretisation * discr;
+    float t;
+    vector<Segment*> m_control_poly;
+    vector<ManageVBO*> vbo_vec_control;
+    vector<ManageVBO*> vbo_vec_courbe;
 
     //RR matrices utiles
     QMatrix4x4 m_modelView;
     QMatrix4x4 m_projection;
     QMatrix4x4 m_model;
+    double m_radius = 0.5;
 
     QOpenGLShaderProgram *m_program;
     QOpenGLBuffer m_vbo;

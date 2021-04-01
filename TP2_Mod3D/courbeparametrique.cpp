@@ -2,47 +2,45 @@
 
 #include "courbeparametrique.h"
 #include <cmath>
+#include <QDebug>
 
-CourbeParametrique::CourbeParametrique(Point start, Point end, Point ctrlPointList[], int n):
-    start(start), end(end), ctrlPointList(ctrlPointList), n(n)
+
+CourbeParametrique::CourbeParametrique(){
+
+}
+
+CourbeParametrique::CourbeParametrique(Point start, Point end, vector<Segment*> ctrlPointList, int n):
+    start(start), end(end), m_control_poly(ctrlPointList), n(n)
 {
-    //t entre 0 et 1
-    pointList = new Point[n]; //liste de points
     this->setStart(start);
     this->setEnd(end);
 }
 
 CourbeParametrique::~CourbeParametrique(){
-    delete [] pointList;
-    pointList = nullptr;
 }
 
-/*
-Point * CourbeParametrique::derivedBezierCurve(Parametre t, Point pointList[]){
-    Point *curve = new Point[3];
-    for (int i=0; i<n-1; i++){
-        curve[i].setX(binomialCoeff(n-1, i)*pow(((float)1-t.getPValue()),n-1-i)
-                *pow((float)t.getPValue(),i)*(pointList[i+1].getX()-pointList[i].getX()));
-        curve[i].setY(binomialCoeff(n-1, i)*pow(((float)1-t.getPValue()),n-1-i)
-                *pow((float)t.getPValue(),i)*(pointList[i+1].getY()-pointList[i].getY()));
-        curve[i].setZ(binomialCoeff(n-1, i)*pow(((float)1-t.getPValue()),n-1-i)
-                *pow((float)t.getPValue(),i)*(pointList[i+1].getZ()-pointList[i].getZ()));
+Point CourbeParametrique::getValueFromBezierCurve(float t){
+    vector<Segment*> sub;
+    sub = m_control_poly;
+    while(sub.size() > 1){
+        vector<Segment*> child;
+        for(int i =0; i < (int) sub.size()-1 ; i++){
+            child.push_back(new Segment(sub[i]->getValueFromSegment(t), sub[i+1]->getValueFromSegment(t)));
+        }
+        sub = child;
     }
-
-
-    return curve;
+    qDebug()<< "BEZIER";
+    return sub.front()->getValueFromSegment(t);
 }
-*/
-
 
 void CourbeParametrique::setStart(const Point & p)
 {
-    pointList[0] = p;
+    pointList.push_back(p);
 }
 
 void CourbeParametrique::setEnd(const Point & p)
 {
-    pointList[1] = p;
+    pointList.push_back(p);
 }
 
 Point CourbeParametrique::getStart() const
@@ -59,8 +57,12 @@ Point CourbeParametrique::getPointList(int index){
     return pointList[index];
 }
 
-Point CourbeParametrique::getCtrlPointList(int index){
-    return ctrlPointList[index];
+Segment* CourbeParametrique::getIndexCtrlPointList(int index){
+    return m_control_poly[index];
+}
+
+vector<Segment*> CourbeParametrique::getCtrlPointList(){
+    return m_control_poly;
 }
 
 int CourbeParametrique::getOrder(){

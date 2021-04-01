@@ -28,14 +28,14 @@ QVector<GLfloat> PrepOpenGL::tableToVBO(int step, float * tablePoint)
 
     if (isSegment) tablePoint = d->segmentToTable();
     else tablePoint = d->bezierToTable();
-    float * values = tablePoint;
+    //float * values = tablePoint;
 
     for (int i=0; i < step*3; ++i){
         vertices[i] = tablePoint[i];
         qDebug() << "tablePoint" << tablePoint[i];
     }
 
-    delete[] values;
+    //delete[] values;
 
     for (int i =0; i<step; i++){
         colors[i*3] = m_color[0];
@@ -72,7 +72,7 @@ void PrepOpenGL::drawLines(QOpenGLShaderProgram *program, QOpenGLFunctions *glFu
     program->enableAttributeArray("posAttr");
     program->enableAttributeArray("colAttr");
 
-    for(int i=0; i < (int)d->getP()-1; i++){
+    for(int i=0; i < (int)d->getCount()-1; i++){
 
         // Pour des questions de portabilité, hors de la classe GLArea, tous les appels
         // aux fonctions glBidule doivent être préfixés par glFuncs->.
@@ -97,7 +97,7 @@ void PrepOpenGL::drawPoints(QOpenGLShaderProgram *program, QOpenGLFunctions *glF
     program->enableAttributeArray("posAttr");
     program->enableAttributeArray("colAttr");
 
-    for(int i=0; i < (int)d->getP(); i++){
+    for(int i=0; i < (int)d->getCount(); i++){
 
         // Pour des questions de portabilité, hors de la classe GLArea, tous les appels
         // aux fonctions glBidule doivent être préfixés par glFuncs->.
