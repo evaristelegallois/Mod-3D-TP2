@@ -60,6 +60,7 @@ void ManageVBO::draw(QOpenGLShaderProgram *program, QOpenGLFunctions *glFuncs){
 
     for(int i=0; i < (int)d->getP()-1; i++){
         glPointSize(7.0);
+        glLineWidth(0.5);
         glFuncs->glDrawArrays(GL_LINES, i,2);
         glFuncs->glDrawArrays(GL_POINTS, i,2);
     }
@@ -83,6 +84,7 @@ void ManageVBO::drawPoints(QOpenGLShaderProgram *program, QOpenGLFunctions *glFu
 
     for(int i=0; i < d->getCount()-1; i++){
         glPointSize(7.0);
+        glLineWidth(2.0);
         glFuncs->glDrawArrays(GL_LINES, i,2);
         //glFuncs->glDrawArrays(GL_POINTS, i,2);
     }

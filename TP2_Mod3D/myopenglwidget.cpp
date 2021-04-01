@@ -87,20 +87,20 @@ ManageVBO* myOpenGLWidget::create_vbo_segment(Point P0, Point P1){
     GLfloat * colors = new GLfloat[3];
     int step = 2;
     Segment *segment = new Segment(P0, P1);
-    m_control_poly.push_back(segment);
-    discr = new Discretisation(*segment,step);
-    colors[0] = 1.0f; colors[1] = 1.0f; colors[2] = 1.0f;
-    return new ManageVBO(discr, colors);
+    ctrlPoly.push_back(segment);
+    d = new Discretisation(*segment,step);
+    colors[0] = 1.0f; colors[1] = 0.5f; colors[2] = 1.0f;
+    return new ManageVBO(d, colors);
 }
 
 
 ManageVBO* myOpenGLWidget::create_vbo_courbe(Point P0, Point P1){
     GLfloat * colors = new GLfloat[3];
     int step = 2;
-    courbe = new CourbeParametrique(P0, P1, m_control_poly, 3);
-    discr = new Discretisation(*courbe,step);
-    colors[0] = 0.0f; colors[1] = 1.0f; colors[2] = 0.0f;
-    return new ManageVBO(discr, colors, false);
+    curve = new CourbeParametrique(P0, P1, ctrlPoly, 3);
+    d = new Discretisation(*curve,step);
+    colors[0] = 0.5f; colors[1] = 1.0f; colors[2] = 0.0f;
+    return new ManageVBO(d, colors, false);
 }
 
 
@@ -109,136 +109,166 @@ void myOpenGLWidget::makeGLObjects()
 {
     //objets géométriques
     //points de contrôle
-    Point P00, P01, P02, P03;
-    Point P10, P11, P12, P13;
-    Point P20, P21, P22, P23;
-    Point P30, P31, P32, P33;
+    Point P00, P01, P02, P03, P04;
+    Point P10, P11, P12, P13, P14;
+    Point P20, P21, P22, P23, P24;
+    Point P30, P31, P32, P33, P34;
+    Point P40, P41, P42, P43, P44;
     float * coord = new float[3];
-    GLfloat * colors = new GLfloat[3]; //1 couleur (RBG) par sommet
 
-    //coordonnées des points de contrôle x, y, z
+    //coordonnées des points de contrôle
     //p00-p03
-    coord[0] = 0.0f; coord[1] = -0.5f; coord[2] = 0.0f;
+    coord[0] = 0.0f; coord[1] = -0.8f; coord[2] = 0.0f;
     P00.set(coord);
 
     coord[0] = 0.7f; coord[1] = 0.2f; coord[2] = 0.0f;
     P01.set(coord);
 
-    coord[0] = 1.5f; coord[1] = 0.5f; coord[2] = 0.0f;
+    coord[0] = 1.8f; coord[1] = 0.4f; coord[2] = 0.0f;
     P02.set(coord);
 
     coord[0] = 2.3f; coord[1] = -0.05f; coord[2] = 0.0f;
     P03.set(coord);
 
-    //p10-p13
-    P10 = P00.translate(-0.1,0.2,0.2);
+    coord[0] = 2.8f; coord[1] = -0.2f; coord[2] = 0.0f;
+    P04.set(coord);
+
+    //p10-p14
+    P10 = P00.translate(-0.1,0.2,0.15);
     P11 = P01.translate(-0.1,0.2,0.2);
-    P12 = P02.translate(-0.1,0.2,0.2);
+    P12 = P02.translate(-0.1,0.15,0.2);
     P13 = P03.translate(-0.1,0.3,0.2);
+    P14 = P04.translate(-0.1,0.3,0.2);
 
-    //p20-p23
-    P20 = P10.translate(-0.1,0.2,0.2);
-    P21 = P11.translate(-0.1,0.2,0.2);
-    P22 = P12.translate(-0.1,0.2,0.2);
-    P23 = P13.translate(-0.1,0.3,0.2);
+    //p20-p24
+    P20 = P10.translate(-0.1,0.2,0.1);
+    P21 = P11.translate(-0.1,0.2,0.1);
+    P22 = P12.translate(-0.1,0.25,0.2);
+    P23 = P13.translate(-0.1,0.3,0.15);
+    P24 = P14.translate(-0.1,0.3,0.1);
 
-    //p30-p33
-    P30 = P20.translate(-0.1,0.3,-0.4);
-    P31 = P21.translate(-0.1,0.3,-0.4);
-    P32 = P22.translate(-0.1,0.3,-0.4);
-    P33 = P23.translate(-0.1,0.4,-0.4);
+    //p30-p34
+    P30 = P20.translate(-0.1,0.2,0.2);
+    P31 = P21.translate(-0.1,0.2,0.2);
+    P32 = P22.translate(-0.1,0.2,0.25);
+    P33 = P23.translate(-0.1,0.3,0.25);
+    P34 = P24.translate(-0.1,0.3,0.2);
 
-    //vector<Segment*> m_control_poly ;
+    //p40-p44
+    P40 = P30.translate(-0.1,0.3,-0.4);
+    P41 = P31.translate(-0.1,0.3,-0.4);
+    P42 = P32.translate(-0.1,0.3,-0.4);
+    P43 = P33.translate(-0.1,0.4,-0.45);
+    P44 = P34.translate(-0.1,0.45,-0.4);
 
-    /////P00-P03
+    /////P00-P04
     //segment p00-p01
-    vbo_vec_control.push_back(create_vbo_segment(P00,P01));
+    ctrlPolyVBO.push_back(create_vbo_segment(P00,P01));
     //segment p01-p02
-    vbo_vec_control.push_back(create_vbo_segment(P01,P02));
+    ctrlPolyVBO.push_back(create_vbo_segment(P01,P02));
     //segment p02-p03
-    vbo_vec_control.push_back(create_vbo_segment(P02,P03));
+    ctrlPolyVBO.push_back(create_vbo_segment(P02,P03));
+    //segment p03-p04
+    ctrlPolyVBO.push_back(create_vbo_segment(P03,P04));
     //courbe de Bézier
-    vbo_vec_courbe.push_back(create_vbo_courbe(P00,P03));
+    curveVBO.push_back(create_vbo_courbe(P00,P04));
 
-    /////P10-P13
-    m_control_poly.clear();
+    /////P10-P14
+    ctrlPoly.clear();
     //segment p10-p11
-    vbo_vec_control.push_back(create_vbo_segment(P10,P11));
+    ctrlPolyVBO.push_back(create_vbo_segment(P10,P11));
     //segment p11-p12
-    vbo_vec_control.push_back(create_vbo_segment(P11,P12));
+    ctrlPolyVBO.push_back(create_vbo_segment(P11,P12));
     //segment p12-p13
-    vbo_vec_control.push_back(create_vbo_segment(P12,P13));
+    ctrlPolyVBO.push_back(create_vbo_segment(P12,P13));
+    //segment p13-p14
+    ctrlPolyVBO.push_back(create_vbo_segment(P13,P14));
     //courbe de Bézier
-    vbo_vec_courbe.push_back(create_vbo_courbe(P10,P13));
+    curveVBO.push_back(create_vbo_courbe(P10,P14));
 
-    /////P20-P23
-    m_control_poly.clear();
+    /////P20-P24
+    ctrlPoly.clear();
     //segment p20-p21
-    vbo_vec_control.push_back(create_vbo_segment(P20,P21));
+    ctrlPolyVBO.push_back(create_vbo_segment(P20,P21));
     //segment p21-p22
-    vbo_vec_control.push_back(create_vbo_segment(P21,P22));
+    ctrlPolyVBO.push_back(create_vbo_segment(P21,P22));
     //segment p22-p23
-    vbo_vec_control.push_back(create_vbo_segment(P22,P23));
+    ctrlPolyVBO.push_back(create_vbo_segment(P22,P23));
+    //segment p23-p24
+    ctrlPolyVBO.push_back(create_vbo_segment(P23,P24));
     //courbe de Bézier
-    vbo_vec_courbe.push_back(create_vbo_courbe(P20,P23));
+    curveVBO.push_back(create_vbo_courbe(P20,P24));
 
-    /////P30-P33
-    m_control_poly.clear();
-    //segment p20-p21
-    vbo_vec_control.push_back(create_vbo_segment(P30,P31));
-    //segment p21-p22
-    vbo_vec_control.push_back(create_vbo_segment(P31,P32));
-    //segment p22-p23
-    vbo_vec_control.push_back(create_vbo_segment(P32,P33));
+    /////P30-P34
+    ctrlPoly.clear();
+    //segment p30-p31
+    ctrlPolyVBO.push_back(create_vbo_segment(P30,P31));
+    //segment p31-p32
+    ctrlPolyVBO.push_back(create_vbo_segment(P31,P32));
+    //segment p32-p33
+    ctrlPolyVBO.push_back(create_vbo_segment(P32,P33));
+    //segment p33-p34
+    ctrlPolyVBO.push_back(create_vbo_segment(P33,P34));
     //courbe de Bézier
-    vbo_vec_courbe.push_back(create_vbo_courbe(P30,P33));
+    curveVBO.push_back(create_vbo_courbe(P30,P34));
 
-    /////P00-P30
-    m_control_poly.clear();
-    //segment p20-p21
-    vbo_vec_control.push_back(create_vbo_segment(P00,P10));
-    //segment p21-p22
-    vbo_vec_control.push_back(create_vbo_segment(P10,P20));
-    //segment p22-p23
-    vbo_vec_control.push_back(create_vbo_segment(P20,P30));
+    /////P40-P44
+    ctrlPoly.clear();
+    //segment p40-p41
+    ctrlPolyVBO.push_back(create_vbo_segment(P40,P41));
+    //segment p41-p42
+    ctrlPolyVBO.push_back(create_vbo_segment(P41,P42));
+    //segment p42-p43
+    ctrlPolyVBO.push_back(create_vbo_segment(P42,P43));
+    //segment p43-p24
+    ctrlPolyVBO.push_back(create_vbo_segment(P43,P44));
+    //courbe de Bézier
+    curveVBO.push_back(create_vbo_courbe(P40,P44));
 
+    /////P00-P40
+    ctrlPoly.clear();
+    //segment p00-p10
+    ctrlPolyVBO.push_back(create_vbo_segment(P00,P10));
+    //segment p10-p20
+    ctrlPolyVBO.push_back(create_vbo_segment(P10,P20));
+    //segment p20-p30
+    ctrlPolyVBO.push_back(create_vbo_segment(P20,P30));
+    //segment p30-p40
+    ctrlPolyVBO.push_back(create_vbo_segment(P30,P40));
 
+    /////P01-P41
+    ctrlPoly.clear();
+    //segment p01-p11
+    ctrlPolyVBO.push_back(create_vbo_segment(P01,P11));
+    //segment p11-p21
+    ctrlPolyVBO.push_back(create_vbo_segment(P11,P21));
+    //segment p21-p31
+    ctrlPolyVBO.push_back(create_vbo_segment(P21,P31));
+    //segment p31-p41
+    ctrlPolyVBO.push_back(create_vbo_segment(P31,P41));
 
-    /////P01-P31
-    m_control_poly.clear();
-    //segment p20-p21
-    vbo_vec_control.push_back(create_vbo_segment(P01,P11));
-    //segment p21-p22
-    vbo_vec_control.push_back(create_vbo_segment(P11,P21));
-    //segment p22-p23
-    vbo_vec_control.push_back(create_vbo_segment(P21,P31));
+    /////P02-P42
+    ctrlPoly.clear();
+    ctrlPolyVBO.push_back(create_vbo_segment(P02,P12));
+    ctrlPolyVBO.push_back(create_vbo_segment(P12,P22));
+    ctrlPolyVBO.push_back(create_vbo_segment(P22,P32));
+    ctrlPolyVBO.push_back(create_vbo_segment(P32,P42));
 
+    /////P03-P43
+    ctrlPoly.clear();
+    ctrlPolyVBO.push_back(create_vbo_segment(P03,P13));
+    ctrlPolyVBO.push_back(create_vbo_segment(P13,P23));
+    ctrlPolyVBO.push_back(create_vbo_segment(P23,P33));
+    ctrlPolyVBO.push_back(create_vbo_segment(P33,P43));
 
-    /////P02-P32
-    m_control_poly.clear();
-    //segment p20-p21
-    vbo_vec_control.push_back(create_vbo_segment(P02,P12));
-    //segment p21-p22
-    vbo_vec_control.push_back(create_vbo_segment(P12,P22));
-    //segment p22-p23
-    vbo_vec_control.push_back(create_vbo_segment(P22,P32));
+    /////P04-P44
+    ctrlPoly.clear();
+    ctrlPolyVBO.push_back(create_vbo_segment(P04,P14));
+    ctrlPolyVBO.push_back(create_vbo_segment(P14,P24));
+    ctrlPolyVBO.push_back(create_vbo_segment(P24,P34));
+    ctrlPolyVBO.push_back(create_vbo_segment(P34,P44));
 
-
-    /////P03-P33
-    m_control_poly.clear();
-    //segment p20-p21
-    vbo_vec_control.push_back(create_vbo_segment(P03,P13));
-    //segment p21-p22
-    vbo_vec_control.push_back(create_vbo_segment(P13,P23));
-    //segment p22-p23
-    vbo_vec_control.push_back(create_vbo_segment(P23,P33));
-
-
-
-
-    //delete discr;
     delete [] coord;
-    delete [] colors;
 
 }
 
@@ -292,16 +322,15 @@ void myOpenGLWidget::paintGL()
 
     m_program->setUniformValue("matrix", m);
 
-    //segments
-    for(ManageVBO* vbo : vbo_vec_control){
+    //polyèdre de contrôle
+    for(ManageVBO* vbo : ctrlPolyVBO){
         vbo->draw(m_program,glFuncs);
     }
 
-    //courbe
-    for(ManageVBO* vbo : vbo_vec_courbe){
+    //courbes/surface de Bézier
+    for(ManageVBO* vbo : curveVBO){
         vbo->drawPoints(m_program,glFuncs);
     }
-
 
     m_program->release();
 }

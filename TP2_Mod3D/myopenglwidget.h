@@ -56,12 +56,12 @@ private:
     double m_ratio = 1;
 
     Segment * segment;
-    CourbeParametrique * courbe;
-    Discretisation * discr;
-    float t;
-    vector<Segment*> m_control_poly;
-    vector<ManageVBO*> vbo_vec_control;
-    vector<ManageVBO*> vbo_vec_courbe;
+    CourbeParametrique * curve;
+    Discretisation * d;
+    Parametre t;
+    vector<Segment*> ctrlPoly;
+    vector<ManageVBO*> ctrlPolyVBO;
+    vector<ManageVBO*> curveVBO;
 
     //RR matrices utiles
     QMatrix4x4 m_modelView;
