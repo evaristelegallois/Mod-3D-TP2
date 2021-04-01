@@ -21,7 +21,7 @@ public:
     Point getStart() const;
     Point getEnd() const;
     int getOrder(); //degré de la courbe
-    Point getValueFromBezierCurve(float t);
+    Point getValueFromBezierCurve(Parametre t);
 
     Point getPointList(int index);
     Segment* getIndexCtrlPointList(int index);

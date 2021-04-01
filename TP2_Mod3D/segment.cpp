@@ -37,14 +37,14 @@ Segment::Segment(const Segment & s)
  * @param p un paramètre variant de 0 à 1 sur la longueur du segment
  * @return la position (Point) sur le segment en fonction du paramètre p
  */
-Point Segment::getValueFromSegment(float p){
+Point Segment::getValueFromSegment(Parametre p){
 
     Point newPoint;
-    newPoint.setX((1-p)*this->getStart().getX() + p*this->getEnd().getX());
+    newPoint.setX((1-p.getPValue())*this->getStart().getX() + p.getPValue()*this->getEnd().getX());
 
-    newPoint.setY((1-p)*this->getStart().getY() + p*this->getEnd().getY());
+    newPoint.setY((1-p.getPValue())*this->getStart().getY() + p.getPValue()*this->getEnd().getY());
 
-    newPoint.setZ((1-p)*this->getStart().getZ() + p*this->getEnd().getZ());
+    newPoint.setZ((1-p.getPValue())*this->getStart().getZ() + p.getPValue()*this->getEnd().getZ());
 
 
     qDebug() << "segment values " << newPoint.getX();
@@ -96,8 +96,6 @@ Point Segment::getEnd() const
 {
     return getN(1);
 }
-
-
 
 Point Segment::getPointList(int index){
     return pointList[index];

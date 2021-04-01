@@ -8,8 +8,8 @@ ManageVBO::ManageVBO(Discretisation * d, GLfloat* color, bool isSegment) : d(d),
     m_vbo.bind();
     QVector<GLfloat> vertData;
 
-    if (isSegment) vertData = tableToVBO(d->getP(), d->segmentToTable());
-    else vertData = tableToVBO(d->getCount(), d->bezierToTable());
+    if (isSegment) vertData = tableToVBO((int)d->getP(), d->segmentToTable());
+    else vertData = tableToVBO((int)d->getCount(), d->bezierToTable());
 
     m_vbo.allocate(vertData.constData(), vertData.count() * sizeof(GLfloat));
     m_vbo.release();

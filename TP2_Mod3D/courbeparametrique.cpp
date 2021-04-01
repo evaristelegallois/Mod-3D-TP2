@@ -19,18 +19,18 @@ CourbeParametrique::CourbeParametrique(Point start, Point end, vector<Segment*> 
 CourbeParametrique::~CourbeParametrique(){
 }
 
-Point CourbeParametrique::getValueFromBezierCurve(float t){
+Point CourbeParametrique::getValueFromBezierCurve(Parametre t){
     vector<Segment*> sub;
     sub = m_control_poly;
     while(sub.size() > 1){
         vector<Segment*> child;
         for(int i =0; i < (int) sub.size()-1 ; i++){
-            child.push_back(new Segment(sub[i]->getValueFromSegment(t), sub[i+1]->getValueFromSegment(t)));
+            child.push_back(new Segment(sub[i]->getValueFromSegment(t.getPValue()), sub[i+1]->getValueFromSegment(t.getPValue())));
         }
         sub = child;
     }
     qDebug()<< "BEZIER";
-    return sub.front()->getValueFromSegment(t);
+    return sub.front()->getValueFromSegment(t.getPValue());
 }
 
 void CourbeParametrique::setStart(const Point & p)

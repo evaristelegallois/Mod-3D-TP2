@@ -39,7 +39,7 @@ public:
     Point getN(unsigned) const;  //récupérer un des points "de contrôle" du segment, le 1er ou le 2e
     Point getStart() const;
     Point getEnd() const;
-    Point getValueFromSegment(float p);
+    Point getValueFromSegment(Parametre p);
 
     Point getPointList(int index);
 

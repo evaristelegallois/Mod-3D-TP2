@@ -13,28 +13,29 @@ using namespace std;
 class Discretisation
 {
 public:
-    Discretisation(Segment segment, int step);
-    Discretisation(CourbeParametrique courbe, int step);
+    Discretisation(Segment segment, Parametre p);
+    Discretisation(CourbeParametrique courbe, Parametre p);
 
-    Point getValueFromSegment(float p);
-    vector<float>  segmentToTable();
+    //Point getValueFromSegment(Parametre p);
+    vector<float> segmentToTable();
 
-    Point getValueFromBezierCurve(float p);
-    Point derivedBezierCurve(float p);
+    Point getValueFromBezierCurve(Parametre p);
     vector<float> bezierToTable();
+    vector<float> altBezierToTable();
 
     int recursiveFact(int value);
     int binomialCoeff(int end, int start);
-    int getP();
+    float bernsteinPolynomial(Parametre t, int i);
+    float getP();
     int getCount();
     vector<float> getTablePoint();
 
 private:
     Segment segment;
-    int step;
-    CourbeParametrique courbe;
+    Parametre p;
+    CourbeParametrique curve;
     vector<float> tablePoint;
-    int compteur=0;
+    int count=0;
 
 };
 
