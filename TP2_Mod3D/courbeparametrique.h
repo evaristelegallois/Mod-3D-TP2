@@ -5,14 +5,11 @@
 
 #include "parametre.h"
 #include "point.h"
-#include "segment.h"
-using namespace std;
 
 class CourbeParametrique
 {
 public:
-    CourbeParametrique();
-    CourbeParametrique(Point start, Point end,  vector<Segment*> ctrlPointList, int n);
+    CourbeParametrique(Point start, Point end, Point pointList[], int n);
     ~CourbeParametrique();
 
     void setStart(const Point&);
@@ -21,20 +18,17 @@ public:
     Point getStart() const;
     Point getEnd() const;
     int getOrder(); //degré de la courbe
-    Point getValueFromBezierCurve(Parametre t);
 
     Point getPointList(int index);
-    Segment* getIndexCtrlPointList(int index);
-    vector<Segment*> getCtrlPointList();
+    Point getCtrlPointList(int index);
 
 private:
 
     Point start;
     Point end;
-    vector<Segment*> m_control_poly;
-    vector<Point> ctrlPointList;
-    vector<Point> pointList;
-    int n;
+    Point * ctrlPointList;
+    Point * pointList;
+    int n; //degré de la courbe (nombre de points de contrôles - 1)
 };
 
-#endif
+#endif // COURBEPARAMETRIQUE_H

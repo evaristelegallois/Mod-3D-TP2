@@ -9,33 +9,34 @@
 
 #include<QVector3D>
 
-using namespace std;
 class Discretisation
 {
 public:
     Discretisation(Segment segment, Parametre p);
     Discretisation(CourbeParametrique courbe, Parametre p);
 
-    //Point getValueFromSegment(Parametre p);
-    vector<float> segmentToTable();
+    Point getValueFromSegment(Parametre p);
+    float * segmentToTable();
 
     Point getValueFromBezierCurve(Parametre p);
-    vector<float> bezierToTable();
-    vector<float> altBezierToTable();
+    Point getValueFromBezierSurface(Parametre t, Parametre s);
+    Point derivedBezierCurve(Parametre p);
+    float * bezierToTable();
+    float * altBezierToTable();
+
+    float bernsteinPolynomial(Parametre t, int i);
 
     int recursiveFact(int value);
     int binomialCoeff(int end, int start);
-    float bernsteinPolynomial(Parametre t, int i);
     float getP();
     int getCount();
-    vector<float> getTablePoint();
 
 private:
     Segment segment;
+    CourbeParametrique courbe;
     Parametre p;
-    CourbeParametrique curve;
-    vector<float> tablePoint;
-    int count=0;
+    float * tablePoint = nullptr;
+    int compteur;
 
 };
 

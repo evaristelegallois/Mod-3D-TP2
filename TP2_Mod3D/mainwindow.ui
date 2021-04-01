@@ -18,46 +18,8 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="2">
-     <widget class="QPushButton" name="pushButton_2">
-      <property name="text">
-       <string>Nettoyer la scène</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0" colspan="3">
-     <widget class="myOpenGLWidget" name="openGLWidget"/>
-    </item>
     <item row="0" column="0">
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <item>
-       <widget class="QPushButton" name="pushButton_3">
-        <property name="text">
-         <string>Charger OBJ</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButton">
-        <property name="text">
-         <string>Intervalle paramétrique</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item row="0" column="1">
-     <spacer name="horizontalSpacer">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>40</width>
-        <height>20</height>
-       </size>
-      </property>
-     </spacer>
+     <widget class="myOpenGLWidget" name="openGLWidget"/>
     </item>
    </layout>
   </widget>
@@ -72,7 +34,7 @@
    </property>
    <widget class="QMenu" name="menu">
     <property name="title">
-     <string>Visualisation de carreaux de Bézier</string>
+     <string>Menu</string>
     </property>
    </widget>
    <addaction name="menu"/>
