@@ -3,7 +3,9 @@
 #ifndef PARAMETRE_H
 #define PARAMETRE_H
 
-
+/**
+ * @brief The Parametre class : paramètre entre 0 et 1 pour avoir la position d'un point sur un élément géométrique
+ */
 class Parametre
 {
 private:

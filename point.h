@@ -15,37 +15,37 @@
 #include <iostream>
 
 /**
- * @brief The Point class : point en 3D
+ * @brief The Point class : création d'un point en 3D
  */
 class Point
 {
 private:
-	float * coords;
+    float * coords;
 
 public:
-	Point();
-	~Point();
-	Point(const Point&);
+    Point();
+    ~Point();
+    Point(const Point&);
 
-	Point& operator= (const Point &);
+    Point& operator= (const Point &);
 
-	float getN(unsigned) const;
-	float getX() const;
-	float getY() const;
-	float getZ() const ;
-	void get(float *) const;
+    float getN(unsigned) const;
+    float getX() const;
+    float getY() const;
+    float getZ() const ;
+    void get(float *) const;
 
-	void setN(unsigned, const float&);
-	void setX(const float&);
-	void setY(const float&);
-	void setZ(const float&);
-	void set(const float *);
+    void setN(unsigned, const float&);
+    void setX(const float&);
+    void setY(const float&);
+    void setZ(const float&);
+    void set(const float *);
 
     Point translate(float x , float y , float z);
 
     friend float* operator+(const Point &p1, const Point &p2);
     friend float* operator*(const Point &p1, const Point &p2);
-	friend std::ostream& operator<<(std::ostream&, const Point&);
+    friend std::ostream& operator<<(std::ostream&, const Point&);
 
 };
 

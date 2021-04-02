@@ -3,7 +3,6 @@
 //R. Raffin, M1 Informatique, "Surfaces 3D"
 //tiré de CC-BY Edouard.Thiel@univ-amu.fr - 22/01/2019
 
-
 #include "myopenglwidget.h"
 #include <QDebug>
 #include <QSurfaceFormat>
@@ -35,6 +34,9 @@ myOpenGLWidget::myOpenGLWidget(QWidget *parent) :
     m_timer = new QTimer(this);
     m_timer->setInterval(50);  // msec
     connect (m_timer, SIGNAL(timeout()), this, SLOT(onTimeout()));
+
+    //MainWindow* main = new MainWindow();
+    //connect(main->clearSceneButton, &QAction::triggered, this, onPushButtonClearScene)
 }
 
 myOpenGLWidget::~myOpenGLWidget()
@@ -51,6 +53,9 @@ myOpenGLWidget::~myOpenGLWidget()
 }
 
 
+/**
+ * @brief myOpenGLWidget::initializeGL : initialiser OpenGL
+ */
 void myOpenGLWidget::initializeGL()
 {
     qDebug() << __FUNCTION__ ;
@@ -70,14 +75,20 @@ void myOpenGLWidget::initializeGL()
     }
 }
 
-void myOpenGLWidget::doProjection()
-{
-    //m_mod.setToIdentity();
-    //modelMatrix.ortho( -aratio, aratio, -1.0f, 1.0f, -1.0f, 1.0f );
-}
+void myOpenGLWidget::doProjection(){}
 
-PrepOpenGL * myOpenGLWidget::surfaceVBO(float step, Point start, Point end,
-                                    Point * ctrlPointList, int order, QString type){
+
+/**
+ * @brief myOpenGLWidget::surfaceVBO : systématiser la mise d'une surface dans un VBO pouvant être utilisé pour dessiner
+ * @param step : nombre d'étapes de discrétisation
+ * @param start : début de l'élément géométrique
+ * @param end : fin de l'élément géométrique
+ * @param ctrlPointList : liste des points de contrôle
+ * @param order : ordre de l'élément géométrique
+ * @param type : type de dessin utilisé
+ * @return la préparation OpenGL de la surface
+ */
+PrepOpenGL * myOpenGLWidget::surfaceVBO(float step, Point start, Point end, Point * ctrlPointList, int order, QString type){
 
     GLfloat * colors = new GLfloat[3]; //1 couleur (RBG) par sommet
 
@@ -87,6 +98,9 @@ PrepOpenGL * myOpenGLWidget::surfaceVBO(float step, Point start, Point end,
     return new PrepOpenGL(d, colors, type, false);
 }
 
+/**
+ * @brief myOpenGLWidget::ctrlPolyVBO : idem que pour la surface, mais pour un segment ici
+ */
 PrepOpenGL * myOpenGLWidget::ctrlPolyVBO(Point start, Point end){
 
     GLfloat * colors = new GLfloat[3]; //1 couleur (RBG) par sommet
@@ -97,21 +111,27 @@ PrepOpenGL * myOpenGLWidget::ctrlPolyVBO(Point start, Point end){
     return new PrepOpenGL(d, colors, "0");
 }
 
-PrepOpenGL * myOpenGLWidget::pointVBO(Parametre t, Parametre s, float step, Point start, Point end,
-                                      Point * ctrlPointList, int order){
+/**
+ * @brief myOpenGLWidget::pointVBO : idem que pour la surface, mais pour un point ici
+ */
+PrepOpenGL * myOpenGLWidget::pointVBO(Parametre t, Parametre s, float step, Point start, Point end, Point * ctrlPointList, int order){
 
     GLfloat * colors = new GLfloat[3]; //1 couleur (RBG) par sommet
 
     step = 10;
     courbe = new CourbeParametrique(start, end, ctrlPointList, order);
     d = new Discretisation(*courbe, step);
-    colors[0] = 1.0f; colors[1] = 1.0f; colors[2] = 0.0f;
+    colors[0] = 1.0f; colors[1] = 0.0f; colors[2] = 1.0f;
     if (t.getPValue()>1 || s.getPValue()>1 || t.getPValue()<0 || s.getPValue()<0){
         qDebug()<<"Les paramètres doivent être compris dans l'intervalle [0,1].";
         return new PrepOpenGL(d, colors, 0, 0);
     } else return new PrepOpenGL(d, colors, t, s);
 }
 
+
+/**
+ * @brief myOpenGLWidget::makeGLObjects : création des éléments graphiques
+ */
 void myOpenGLWidget::makeGLObjects()
 {
     //objets géométriques
@@ -169,7 +189,7 @@ void myOpenGLWidget::makeGLObjects()
         P44 = P34.translate(-0.1,0.45,-0.4);
 
 
-    ///////polyèdre de contrôle
+    //polyèdre de contrôle
     listVBO.push_back(ctrlPolyVBO(P00,P01));
     listVBO.push_back(ctrlPolyVBO(P01,P02));
     listVBO.push_back(ctrlPolyVBO(P02,P03));
@@ -202,7 +222,7 @@ void myOpenGLWidget::makeGLObjects()
     listVBO.push_back(ctrlPolyVBO(P13,P23));
     listVBO.push_back(ctrlPolyVBO(P23,P33));
 
-    ///////courbes de Bézier
+    //courbes de Bézier
     Point *ctrlPointList = new Point[16];  //liste des points de contrôle de la courbe
     ctrlPointList[0] = P00;
     ctrlPointList[1] = P10;
@@ -233,13 +253,11 @@ void myOpenGLWidget::makeGLObjects()
     ctrlPointList2[7] = P12;
     ctrlPointList2[8] = P22;
 
-    //on instancie les VBO pour le dessins des courbes de Bézier
-    vbo0 = surfaceVBO(0.2, P00, P33, ctrlPointList, 3, "line");
-    //vbo1 = surfaceVBO(0.1, P00, P22, ctrlPointList2, 2, "line");
+    //on instancie les VBO pour le dessin des courbes de Bézier
+    vbo0 = surfaceVBO(step, P00, P33, ctrlPointList, 3, type);
 
-    t =0.8;
-    s =0.5;
-    ptVBO = pointVBO(t, s, 0.1, P00, P33, ctrlPointList, 3);
+    //on instancie le VBO pour le point S(t,s)
+    ptVBO = pointVBO(t, s, step, P00, P33, ctrlPointList, 3);
 
     delete [] coord;
     delete [] ctrlPointList;
@@ -248,11 +266,20 @@ void myOpenGLWidget::makeGLObjects()
 }
 
 
+/**
+ * @brief myOpenGLWidget::tearGLObjects : destruction des éléments graphiques
+ */
 void myOpenGLWidget::tearGLObjects()
 {
     m_vbo.destroy();
 }
 
+
+/**
+ * @brief myOpenGLWidget::resizeGL : redimensionner la fenêtre de l'application
+ * @param w : largeur
+ * @param h : hauteur
+ */
 void myOpenGLWidget::resizeGL(int w, int h)
 {
     qDebug() << __FUNCTION__ << w << h;
@@ -264,6 +291,10 @@ void myOpenGLWidget::resizeGL(int w, int h)
     //doProjection();
 }
 
+
+/**
+ * @brief myOpenGLWidget::paintGL : dessin des éléments graphiques dans la scène
+ */
 void myOpenGLWidget::paintGL()
 {
     qDebug() << __FUNCTION__ ;
@@ -285,10 +316,6 @@ void myOpenGLWidget::paintGL()
         m_projection.setToIdentity ();
         m_projection.perspective(70.0, width() / height(), 0.1, 100.0); //ou m_ratio
 
-        //centrer la vue sur les éléments géométriques dessinés
-        //m_model.translate(-0.35, -0.2, 0);
-        //m_model.translate(m_posX, m_posY, 0);
-
         // Rotation de la scène pour l'animation
         m_model.rotate(m_angleX, 1, 0, 0);
 
@@ -297,13 +324,15 @@ void myOpenGLWidget::paintGL()
 
     m_program->setUniformValue("matrix", m);
 
+    //affichage des objets
+
     if (isDisplayed){
         //polyèdre de contrôle
         for(PrepOpenGL* vbo : listVBO){
             vbo->draw(m_program,glFuncs);
-            //peu importe l'ordre dans lequel les opérations sont réalisées le polygone
-            //de contrôle apparait toujours à l'arrière de la surface, bien que nous ne
-            //sachions pas pourquoi (peut-être à cause de la partie plus "enfoncée" du polyèdre)
+            ///peu importe l'ordre dans lequel les opérations sont réalisées le polygone
+            ///de contrôle apparait toujours à l'arrière de la surface, bien que nous ne
+            ///sachions pas pourquoi (peut-être à cause de la partie plus "enfoncée" du polyèdre)
         }
     }
 
@@ -317,12 +346,15 @@ void myOpenGLWidget::paintGL()
     m_program->release();
 }
 
+/**
+ * @brief myOpenGLWidget::keyPressEvent : gestion des événements clavier
+ * @param ev : événement clavier
+ */
 void myOpenGLWidget::keyPressEvent(QKeyEvent *ev)
 {
     qDebug() << __FUNCTION__ << ev->text();
 
     switch(ev->key()) {
-        //rotation selon l'axe x
         case Qt::Key_X :
             m_angleX += 0.2;
             if (m_angleX >= 360) m_angleX -= 360;
@@ -335,6 +367,7 @@ void myOpenGLWidget::keyPressEvent(QKeyEvent *ev)
             break;
 
         //déplacer la caméra avec les flèches du clavier
+        //au final non intégré dans paintGL car la position de la caméra n'est pas adaptée
         case Qt::Key_Left :
             m_posX -= 0.05f;
             update();
@@ -356,6 +389,7 @@ void myOpenGLWidget::keyPressEvent(QKeyEvent *ev)
 }
 
 
+//méthodes de gestion du clavier et de la souris
 void myOpenGLWidget::keyReleaseEvent(QKeyEvent *ev)
 {
     qDebug() << __FUNCTION__ << ev->text();
@@ -383,7 +417,63 @@ void myOpenGLWidget::onTimeout()
     update();
 }
 
+//fonctions modifiant l'affichage de la scène
+
+/**
+ * @brief myOpenGLWidget::displayPoly : afficher ou non le polyèdre de contrôle
+ * @param b : afficher si vrai, ne pas afficher si faux
+ */
 void myOpenGLWidget::displayPoly(bool b){
     isDisplayed=b;
     update();
+}
+
+/**
+ * @brief myOpenGLWidget::drawType : changer dynamiquement le type de dessin de la surface de Bézier
+ * @param i : indice du type de dessin
+ */
+void myOpenGLWidget::drawType(int i){
+    if (i == 0) type = "triangle";
+    else if (i == 1) type = "line";
+    else if (i == 2) type = "0";
+
+    makeGLObjects();
+    update();
+}
+
+//change dynamiquement les paramètres t et s pour afficher un point
+//sur la surface de Bézier
+/**
+ * @brief myOpenGLWidget::setT change dynamiquement le paramètre t pour afficher un point sur la surface de Bézier
+ * @param value : nouvelle valeur pour t
+ */
+void myOpenGLWidget::setT(double value){
+    t.setPValue((float)value);
+
+    makeGLObjects();
+    update();
+}
+
+/**
+ * @brief myOpenGLWidget::setS change dynamiquement le paramètre s pour afficher un point sur la surface de Bézier
+ * @param value : nouvelle valeur pour s
+ */
+void myOpenGLWidget::setS(double value){
+    s.setPValue((float)value);
+
+    makeGLObjects();
+    update();
+}
+
+/*
+ * @brief myOpenGLWidget::setStep : modifier le pas de discrétisation uniforme de la surface de Bézier affichée dans la scène
+ * @param value : nouvelle valeur du pas
+ * Il semblerait que la discrétisation ne soit pas optimale car il manque le dernier point pour chaque "morceau" de
+ * l'intervalle de discrétisation, et les derniers points sont parfois situés à des endroits étranges
+ */
+void myOpenGLWidget::setStep(double value){
+   step = (float) value;
+
+   makeGLObjects();
+   update();
 }

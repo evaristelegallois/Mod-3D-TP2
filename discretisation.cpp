@@ -4,10 +4,12 @@
 #include<QDebug>
 #include<cmath>
 
-Discretisation::Discretisation(Segment segment, Parametre p): segment(segment), courbe(courbe), p(p){
+Discretisation::Discretisation(Segment segment, Parametre p):
+    segment(segment), courbe(courbe), p(p){
     tablePoint = new float[((int) p.getPValue()+1)*3]; //tableau de sommets
 }
 
+//constructeur de surface de Bézier spécifiquement
 Discretisation::Discretisation(CourbeParametrique courbe, Parametre p, bool isSurface):
     courbe(courbe), p(p), isSurface(isSurface){
 
@@ -22,9 +24,12 @@ Discretisation::Discretisation(CourbeParametrique courbe, Parametre p, bool isSu
 Point Discretisation::getValueFromSegment(Parametre p){
 
     Point newPoint;
-    newPoint.setX((1-p.getPValue())*segment.getStart().getX() + p.getPValue()*segment.getEnd().getX());
-    newPoint.setY((1-p.getPValue())*segment.getStart().getY() + p.getPValue()*segment.getEnd().getY());
-    newPoint.setZ((1-p.getPValue())*segment.getStart().getZ() + p.getPValue()*segment.getEnd().getZ());
+    newPoint.setX((1-p.getPValue())*segment.getStart().getX()
+                  + p.getPValue()*segment.getEnd().getX());
+    newPoint.setY((1-p.getPValue())*segment.getStart().getY()
+                  + p.getPValue()*segment.getEnd().getY());
+    newPoint.setZ((1-p.getPValue())*segment.getStart().getZ()
+                  + p.getPValue()*segment.getEnd().getZ());
 
     return newPoint;
 }
@@ -58,9 +63,12 @@ Point Discretisation::getValueFromBezierCurve(Parametre t){
     //vérifier si t est bien entre 0 et 1
     if(0 < (float) t.getPValue() && (float) t.getPValue() < 1){
         for (int i=0; i<courbe.getOrder()+1; i++){
-            newPoint.setX(newPoint.getX() + (bernsteinPolynomial(t, i)*courbe.getCtrlPointList(i).getX()));
-            newPoint.setY(newPoint.getY() + (bernsteinPolynomial(t,i)*courbe.getCtrlPointList(i).getY()));
-            newPoint.setZ(newPoint.getZ() + (bernsteinPolynomial(t,i)*courbe.getCtrlPointList(i).getZ()));
+            newPoint.setX(newPoint.getX() + (bernsteinPolynomial(t, i)
+                                             *courbe.getCtrlPointList(i).getX()));
+            newPoint.setY(newPoint.getY() + (bernsteinPolynomial(t,i)
+                                             *courbe.getCtrlPointList(i).getY()));
+            newPoint.setZ(newPoint.getZ() + (bernsteinPolynomial(t,i)
+                                             *courbe.getCtrlPointList(i).getZ()));
         }
     }
     else if (t.getPValue() == 0) return courbe.getStart();  //cas où t=0 -> début de la courbe
@@ -70,9 +78,9 @@ Point Discretisation::getValueFromBezierCurve(Parametre t){
 }
 
 /**
- * @brief Discretisation::getValueFromBezierCurve
- * @param p un paramètre variant de 0 à 1 sur la longueur de la courbe de Bézier
- * @return la position (Point) sur la courbe en fonction du paramètre p
+ * @brief Discretisation::getValueFromBezierSurface
+ * @param t et s deux paramètres variant de 0 à 1 sur la longueur de la surface de Bézier
+ * @return la position (Point) sur la courbe en fonction du paramètre t, s
  */
 Point Discretisation::getValueFromBezierSurface(Parametre t, Parametre s){
 
@@ -88,37 +96,14 @@ Point Discretisation::getValueFromBezierSurface(Parametre t, Parametre s){
             newPoint.setY(newPoint.getY() + (bernsteinPolynomial(t,i)*bernsteinPolynomial(s,j)
                                                  *courbe.getCtrlPointList((courbe.getOrder()+1)*i+j).getY()));
             newPoint.setZ(newPoint.getZ() + (bernsteinPolynomial(t,i)*bernsteinPolynomial(s,j)
-                                                 *courbe.getCtrlPointList((courbe.getOrder()+1)*i+j).getZ()));  
+                                                 *courbe.getCtrlPointList((courbe.getOrder()+1)*i+j).getZ()));
         }
     }
     return newPoint;
 }
 
-float Discretisation::bernsteinPolynomial(Parametre t, int i){
-    return binomialCoeff(courbe.getOrder(), i)*pow(((float)1-t.getPValue()),
-                                                   courbe.getOrder()-i)*pow((float)t.getPValue(),i);
-}
-
-float * Discretisation::altBezierToTable(){
-    //compteur = 0;
-    float step = p.getPValue();
-    for (int i=0; i<= (int) 1/step; i++){
-        for (int j=0; j<= (int) 1/step; j++){
-
-                //fabrication d'un nouveau point
-                tablePoint[3*(int)(1/step)*i+3*j]   = getValueFromBezierSurface((float) step*i, (float) step*j).getX();
-                tablePoint[1+3*(int)(1/step)*i+3*j] = getValueFromBezierSurface((float) step*i, (float) step*j).getY();
-                tablePoint[2+3*(int)(1/step)*i+3*j] = getValueFromBezierSurface((float) step*i, (float) step*j).getZ();
-                //compteur++;
-
-        }
-    }
-    //qDebug()<<"count"<<compteur;
-    return tablePoint;
-}
-
 /**
- * @brief Discretisation::bezierToTable : fonction de discrétisation d'une courbe
+ * @brief Discretisation::bezierToTable : fonction de discrétisation d'une courbe par avancée de front
  * @return la courbe de Bézier sous forme de tableau de floats
  */
 float * Discretisation::bezierToTable(){
@@ -184,6 +169,27 @@ float * Discretisation::bezierToTable(){
     return tablePoint;
 }
 
+/**
+ * @brief Discretisation::altBezierToTable : fonction de discrétisation uniforme d'une courbe
+ * @return la surface de Bézier sous forme de tableau de floats
+ */
+float * Discretisation::altBezierToTable(){
+    float step = p.getPValue();
+    for (int i=0; i<= (int) 1/step; i++){
+        for (int j=0; j<= (int) 1/step; j++){
+
+                //fabrication d'un nouveau point
+                tablePoint[3*(int)(1/step)*i+3*j]   =
+                        getValueFromBezierSurface((float) step*i, (float) step*j).getX();
+                tablePoint[1+3*(int)(1/step)*i+3*j] =
+                        getValueFromBezierSurface((float) step*i, (float) step*j).getY();
+                tablePoint[2+3*(int)(1/step)*i+3*j] =
+                        getValueFromBezierSurface((float) step*i, (float) step*j).getZ();
+
+        }
+    }
+    return tablePoint;
+}
 
 /**
  * @brief Discretisation::recursiveFact
@@ -197,12 +203,20 @@ int Discretisation::recursiveFact(int value){
 
 /**
  * @brief Discretisation::binomialCoeff
- * @param end
- * @param start
  * @return le calcul du coefficient binomial entre end (n) et start (k)
  */
 int Discretisation::binomialCoeff(int end, int start){
     return (recursiveFact(end)/(recursiveFact(end-start)*recursiveFact(start)));
+}
+
+/**
+ * @brief Discretisation::bernsteinPolynomial
+ * @param t paramètre entre 0 et 1
+ * @param i un entier pour le calcul du polynôme
+ * @return polynôme de Bernstein
+ */
+float Discretisation::bernsteinPolynomial(Parametre t, int i){
+    return binomialCoeff(courbe.getOrder(), i)*pow(((float)1-t.getPValue()), courbe.getOrder()-i)*pow((float)t.getPValue(),i);
 }
 
 /**
@@ -222,10 +236,18 @@ int Discretisation::getCount(){
     else return (int)pow(((1/p.getPValue())+1),2);
 }
 
+/**
+ * @brief Discretisation::isBezierSurface
+ * @return true si l'objet voulu est une surface de Bézier, false sinon
+ */
 bool Discretisation::isBezierSurface(){
     return isSurface;
 }
 
+/**
+ * @brief Discretisation::getPoint
+ * @return un point S(t,s) sur la surface de Bézier
+ */
 Point Discretisation::getPoint(Parametre t, Parametre s){
     return getValueFromBezierSurface(t,s);
 }

@@ -18,6 +18,9 @@
 #include "prepopengl.h"
 using namespace std;
 
+/**
+ * @brief The myOpenGLWidget class : scène où sont dessinés les éléments géométriques
+ */
 class myOpenGLWidget : public QOpenGLWidget,
                protected QOpenGLFunctions
 {
@@ -36,7 +39,16 @@ signals:  // On ne les implémente pas, elles seront générées par MOC ;
 
 protected slots:
     void onTimeout();
+    //slots pour l'affichage d'éléments sur la scène
     void displayPoly(bool);
+    void drawType(int);
+
+    //slots pour l'affichage du point S(t,s)
+    void setT(double);
+    void setS(double);
+
+    //slot pour le changement du pas de discrétisation
+    void setStep(double);
 
 protected:
     void initializeGL() override;
@@ -49,6 +61,7 @@ protected:
     void mouseReleaseEvent(QMouseEvent *ev) override;
     void mouseMoveEvent(QMouseEvent *ev) override;
 
+    //fonctions de créations de VBO pour les objets voulus
     PrepOpenGL * ctrlPolyVBO(Point start, Point end);
     PrepOpenGL * surfaceVBO(float step, Point start, Point end,
                           Point * ctrlPointList, int order, QString type);
@@ -66,17 +79,28 @@ private:
     Segment * segment;
     CourbeParametrique * courbe;
     Discretisation * d;
+    //le paramètre p est le paramètre de discrétisation
     Parametre p;
-    Parametre t;
-    Parametre s;
 
+    //les paramètres s et t permettent d'obtenir un point
+    //sur la surface de Bézier
+    Parametre t=0;
+    Parametre s=0;
+
+    //pas de discrétisation
+    float step=0.1;
+
+    //courbes de Bézier, et un point
     PrepOpenGL * vbo0;
     PrepOpenGL * vbo1;
     PrepOpenGL * ptVBO;
-
+    //polyèdre de contrôle
     vector<PrepOpenGL*> listVBO;
 
+    //pour affichage du polyèdre de contrôle
     bool isDisplayed = false;
+    //pour affichage de différents types de dessin
+    QString type = "triangle";
 
     //RR matrices utiles
     QMatrix4x4 m_modelView;
