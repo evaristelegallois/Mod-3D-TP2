@@ -2,67 +2,90 @@
 
 #include "prepopengl.h"
 
-PrepOpenGL::PrepOpenGL(Discretisation * d, GLfloat* color, bool isSegment) : d(d), m_color(color), isSegment(isSegment)
+PrepOpenGL::PrepOpenGL(Discretisation * d, GLfloat* color, QString type, bool isSegment) :
+    d(d), m_color(color), type(type), isSegment(isSegment)
 {
     m_vbo.create();
     m_vbo.bind();
     QVector<GLfloat> vertData;
+    drawingType();
 
     if (isSegment) vertData = tableToVBO(d->getP(), d->segmentToTable());
-    else vertData = tableToVBO(d->getCount()+1, d->altBezierToTable());
-
+    else {
+        if (d->isBezierSurface()) vertData = tableToVBO(d->getCount(), d->altBezierToTable()); //surface de Bézier
+        else vertData = tableToVBO(d->getCount(), d->bezierToTable()); //courbe de Bézier
+    }
 
     m_vbo.allocate(vertData.constData(), vertData.count() * sizeof(GLfloat));
     m_vbo.release();
 }
 
+PrepOpenGL::PrepOpenGL(Discretisation * d, GLfloat* color, Parametre t, Parametre s) :
+    d(d), m_color(color), t(t), s(s)
+{
+    m_vbo.create();
+    m_vbo.bind();
+    QVector<GLfloat> vertData;
+    isPoint = true;
+    isSegment = false;
+
+    vertData = pointToVBO(d->getPoint(t, s)); //récupération d'un point sur la surface
+    m_vbo.allocate(vertData.constData(), vertData.count() * sizeof(GLfloat));
+    m_vbo.release();
+}
+
+void PrepOpenGL::drawingType(){
+    if (type == "triangle"){
+        isLine = false;
+        isTriangle = true;
+    }
+    else if (type == "line"){
+        isTriangle = false;
+        isLine = true;
+    }
+    else if (type == "0"){
+        isLine = false;
+        isTriangle = false;
+    }
+}
 
 QVector<GLfloat> PrepOpenGL::tableToVBO(int step, float * tablePoint)
 {
     //Votre composant de traduction "sortie de discrétisation" ->
     //"structures OpenGL" doit pouvoir faire ce choix (GL_Lines, Points ou Triangles)
-    bool isTriangle = true;
-    int l = 121;
 
     //2 Traduction en tableaux de floats
-    GLfloat * vertices = new GLfloat[l*3]; //nb de sommets dépendant de la discrétisation
-    GLfloat * colors = new GLfloat[l*3]; //1 couleur (RBG) par sommet
+    GLfloat * vertices = new GLfloat[step*3]; //nb de sommets dépendant de la discrétisation
+    GLfloat * colors = new GLfloat[step*3]; //1 couleur (RBG) par sommet
 
-    if (isSegment) tablePoint = d->segmentToTable();
-    else tablePoint = d->altBezierToTable();
-    //float * values = tablePoint;
-
-    for (int i=0; i < l*3; ++i){
+    //stockage des coordonnées des sommets ainsi que les couleurs
+    for (int i=0; i < step*3; ++i){
         vertices[i] = tablePoint[i];
-        qDebug() << "tablePoint" << tablePoint[i];
     }
-
-    //delete[] values;
-
-    for (int i =0; i<l; i++){
+    for (int i =0; i<step; i++){
         colors[i*3] = m_color[0];
         colors[i*3+1] = m_color[1];
         colors[i*3+2] = m_color[2];
     }
 
-    //3 spécialisation OpenGL
+    //3 spécialisations OpenGL
     QVector<GLfloat> vertData;
-    if (isTriangle){
-        for (int i = 0; i < 10; ++i) { //nb de sommets dépendant de la discrétisation
-            for (int j = 0; j < 10; ++j) { //nb de sommets dépendant de la discrétisation
-            // coordonnées sommets
-                for (int u = 0; u < 3; u++) vertData.append(vertices[30*i+3*j+u]);
-                // couleurs sommets
-                for (int u = 0; u < 3; u++) vertData.append(colors[30*i+3*j+u]);
 
+    //si triangle, on réorganise le VBO pour que les points soient orientés de telle façon
+    //à ce que l'on produise des triangles
+    if (isTriangle){
+        for (int i = 0; i < sqrt(step)-1; ++i) { //nb de sommets dépendant de la discrétisation
+            for (int j = 0; j < sqrt(step)-1; ++j) {
+                //on stocke chaque couple de sommets/couleurs pour ne pas modifier
+                //l'organisation des buffers (3 sommets puis 3 couleurs sont attendus)
+                for (int u = 0; u < 3; u++) vertData.append(vertices[30*i+3*j+u]);
+                for (int u = 0; u < 3; u++) vertData.append(colors[30*i+3*j+u]);
 
                 for (int u = 0; u < 3; u++) vertData.append(vertices[30*i+3*(j+1)+u]);
                 for (int u = 0; u < 3; u++) vertData.append(colors[30*i+3*(j+1)+u]);
 
-
                 for (int u = 0; u < 3; u++) vertData.append(vertices[30*(i+1)+3*(j)+u]);
                 for (int u = 0; u < 3; u++) vertData.append(colors[30*(i+1)+3*(j)+u]);
-
 
                 for (int u = 0; u < 3; u++) vertData.append(vertices[30*(i+1)+3*(j)+u]);
                 for (int u = 0; u < 3; u++) vertData.append(colors[30*(i+1)+3*(j)+u]);
@@ -72,12 +95,33 @@ QVector<GLfloat> PrepOpenGL::tableToVBO(int step, float * tablePoint)
 
                 for (int u = 0; u < 3; u++) vertData.append(vertices[30*(i)+3*(j+1)+u]);
                 for (int u = 0; u < 3; u++) vertData.append(colors[30*(i)+3*(j+1)+u]);
-
              }
         }
+    //si filaire, on réorganise le VBO pour que les points soient orientés de telle façon
+    //à ce que l'on produise des lignes (pas optimale, une ligne diagonale en trop à chaque étape)
+    } else if (isLine){
+        for (int i = 0; i < sqrt(step)-1; ++i) { //nb de sommets dépendant de la discrétisation
+            for (int j = 0; j < sqrt(step)-1; ++j) {
+                //on stocke chaque couple de sommets/couleurs pour ne pas modifier
+                //l'organisation des buffers (3 sommets puis 3 couleurs sont attendus)
+                for (int u = 0; u < 3; u++) vertData.append(vertices[30*i+3*j+u]);
+                for (int u = 0; u < 3; u++) vertData.append(colors[30*i+3*j+u]);
 
+                for (int u = 0; u < 3; u++) vertData.append(vertices[30*i+3*(j+1)+u]);
+                for (int u = 0; u < 3; u++) vertData.append(colors[30*i+3*(j+1)+u]);
+
+                for (int u = 0; u < 3; u++) vertData.append(vertices[30*(i+1)+3*(j+1)+u]);
+                for (int u = 0; u < 3; u++) vertData.append(colors[30*(i+1)+3*(j+1)+u]);
+
+                for (int u = 0; u < 3; u++) vertData.append(vertices[30*(i+1)+3*(j)+u]);
+                for (int u = 0; u < 3; u++) vertData.append(colors[30*(i+1)+3*(j)+u]);
+
+                for (int u = 0; u < 3; u++) vertData.append(vertices[30*(i)+3*(j)+u]);
+                for (int u = 0; u < 3; u++) vertData.append(colors[30*(i)+3*(j)+u]);
+             }
+        }
+    //si affichage de points seulement, pas besoin de réorganiser le VBO
     } else{
-
         for (int i = 0; i < step; ++i) { //nb de sommets dépendant de la discrétisation
             // coordonnées sommets
         for (int j = 0; j < 3; j++) //3 coords par sommet
@@ -87,6 +131,7 @@ QVector<GLfloat> PrepOpenGL::tableToVBO(int step, float * tablePoint)
                 vertData.append(colors[i*3+j]);
         }
     }
+
     delete [] vertices;
     delete [] colors;
 
@@ -94,7 +139,7 @@ QVector<GLfloat> PrepOpenGL::tableToVBO(int step, float * tablePoint)
 
 }
 
-void PrepOpenGL::drawLines(QOpenGLShaderProgram *program, QOpenGLFunctions *glFuncs){
+void PrepOpenGL::draw(QOpenGLShaderProgram *program, QOpenGLFunctions *glFuncs){
 
     m_vbo.bind();
 
@@ -110,23 +155,36 @@ void PrepOpenGL::drawLines(QOpenGLShaderProgram *program, QOpenGLFunctions *glFu
 
             // Pour des questions de portabilité, hors de la classe GLArea, tous les appels
             // aux fonctions glBidule doivent être préfixés par glFuncs->.
-            glPointSize(6.0f);
-            glFuncs->glDrawArrays(GL_LINES, i, 2);
-        }
-    } else{
-        for(int i=0; i < (int)d->getCount()-1; i++){
-
-            // Pour des questions de portabilité, hors de la classe GLArea, tous les appels
-            // aux fonctions glBidule doivent être préfixés par glFuncs->.
-            glPointSize(6.0f);
-            glFuncs->glDrawArrays(GL_LINES, i, 2);
-
-
-            /*glPointSize(7.0);
+            glPointSize(5.0f);
+            glFuncs->glDrawArrays(GL_POINTS, i, 2);
             glFuncs->glDrawArrays(GL_LINES, i,2);
-            glFuncs->glDrawArrays(GL_POINTS, i,2);*/
+
         }
-    }
+    } else if (isTriangle){
+        //la discretisation crée 100 points (10*10), *6 car pour créer deux triangles il nous faut 6 pts
+        for(int i=0; i < pow(sqrt(d->getCount())-1,2)*6-3; i++){
+
+            glFuncs->glDrawArrays(GL_TRIANGLES, i, 3);
+        }
+    } else if (isLine){
+            //la discretisation crée 100 points (10*10), *5 car on utilise 4 points pour créer un carré
+            //puis on revient au premier point = 5 pts
+            for(int i=0; i < pow(sqrt(d->getCount())-1,2)*5-5; i++){
+
+            glPointSize(5.0f);
+            glFuncs->glDrawArrays(GL_LINES, i,2);
+            glFuncs->glDrawArrays(GL_POINTS, i,1);
+        }
+    } else if (isPoint){
+            glPointSize(10.0f);
+            glFuncs->glDrawArrays(GL_POINTS, 0,1);
+
+    } else {
+            for(int i=0; i < pow(sqrt(d->getCount())-1,2); i++){
+                glPointSize(5.0f);
+                glFuncs->glDrawArrays(GL_POINTS, i,1);
+            }
+        }
 
     program->disableAttributeArray("posAttr");
     program->disableAttributeArray("colAttr");
@@ -134,42 +192,30 @@ void PrepOpenGL::drawLines(QOpenGLShaderProgram *program, QOpenGLFunctions *glFu
     m_vbo.release();
 }
 
-void PrepOpenGL::drawPoints(QOpenGLShaderProgram *program, QOpenGLFunctions *glFuncs){
 
-    m_vbo.bind();
+QVector<GLfloat> PrepOpenGL::pointToVBO(Point point){
+    GLfloat * vertices = new GLfloat[3]; //nb de sommets dépendant de la discrétisation
+    GLfloat * colors = new GLfloat[3]; //1 couleur (RBG) par sommet
 
-    program->setAttributeBuffer("posAttr",
-        GL_FLOAT, 0 * sizeof(GLfloat), 3, 6 * sizeof(GLfloat));
-    program->setAttributeBuffer("colAttr",
-        GL_FLOAT, 3 * sizeof(GLfloat), 3, 6 * sizeof(GLfloat));
-    program->enableAttributeArray("posAttr");
-    program->enableAttributeArray("colAttr");
+    vertices[0] = point.getX();
+    vertices[1] = point.getY();
+    vertices[2] = point.getZ();
 
-    if (isSegment){
-        for(int i=0; i < (int)d->getP(); i++){
+    colors[0] = m_color[0];
+    colors[1] = m_color[1];
+    colors[2] = m_color[2];
 
-            // Pour des questions de portabilité, hors de la classe GLArea, tous les appels
-            // aux fonctions glBidule doivent être préfixés par glFuncs->.
-            glPointSize(5.0f);
-            glFuncs->glDrawArrays(GL_POINTS, i, 2);
-        }
-    } else{
-        for(int i=0; i < 597; i++){
+    QVector<GLfloat> vertData;
 
-            // Pour des questions de portabilité, hors de la classe GLArea, tous les appels
-            // aux fonctions glBidule doivent être préfixés par glFuncs->.
-            glPointSize(5.0f);
-            //glFuncs->glDrawArrays(GL_POINTS, i, 1);
-            glFuncs->glDrawArrays(GL_TRIANGLES, i, 3);
+    for (int j = 0; j < 3; j++) //3 coords par sommet
+            vertData.append(vertices[j]);
+        // couleurs sommets
+    for (int j = 0; j < 3; j++) //1 RGB par sommet
+            vertData.append(colors[j]);
 
-            /*glPointSize(7.0);
-            glFuncs->glDrawArrays(GL_LINES, i,2);
-            glFuncs->glDrawArrays(GL_POINTS, i,1);*/
-        }
-    }
+    delete [] vertices;
+    delete [] colors;
 
-    program->disableAttributeArray("posAttr");
-    program->disableAttributeArray("colAttr");
+    return vertData;
 
-    m_vbo.release();
 }

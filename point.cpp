@@ -74,6 +74,15 @@ void Point::setZ(const float& v)
 	setN(2, v);
 }
 
+Point Point::translate(float x , float y , float z)
+{
+    Point point;
+    point.setX(this->getX()+x);
+    point.setY(this->getY()+y);
+    point.setZ(this->getZ()+z);
+    return point;
+}
+
 /**
  * @brief Point::operator = : surcharge opérateur affectation
  * @param p point
@@ -99,15 +108,6 @@ float* operator+ (const Point &p1, const Point &p2)
         somme[i] += p1.coords[i] + p2.coords[i];
 
     return somme;
-}
-
-Point Point::translate(float x , float y , float z)
-{
-    Point point;
-    point.setX(this->getX()+x);
-    point.setY(this->getY()+y);
-    point.setZ(this->getZ()+z);
-    return point;
 }
 
 /**

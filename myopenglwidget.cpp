@@ -79,6 +79,41 @@ void myOpenGLWidget::doProjection()
     //modelMatrix.ortho( -aratio, aratio, -1.0f, 1.0f, -1.0f, 1.0f );
 }
 
+PrepOpenGL * myOpenGLWidget::surfaceVBO(float step, Point start, Point end,
+                                    Point * ctrlPointList, int order, QString type){
+
+    GLfloat * colors = new GLfloat[3]; //1 couleur (RBG) par sommet
+
+    courbe = new CourbeParametrique(start, end, ctrlPointList, order);
+    d = new Discretisation(*courbe, step);
+    colors[0] = 0.0f; colors[1] = 1.0f; colors[2] = 0.0f;
+    return new PrepOpenGL(d, colors, type, false);
+}
+
+PrepOpenGL * myOpenGLWidget::ctrlPolyVBO(Point start, Point end){
+
+    GLfloat * colors = new GLfloat[3]; //1 couleur (RBG) par sommet
+
+    segment = new Segment(2, start, end);
+    d = new Discretisation(*segment, 2);
+    colors[0] = 1.0f; colors[1] = 0.0f; colors[2] = 0.0f;
+    return new PrepOpenGL(d, colors, "0");
+}
+
+PrepOpenGL * myOpenGLWidget::pointVBO(Parametre t, Parametre s, float step, Point start, Point end,
+                                      Point * ctrlPointList, int order){
+
+    GLfloat * colors = new GLfloat[3]; //1 couleur (RBG) par sommet
+
+    step = 10;
+    courbe = new CourbeParametrique(start, end, ctrlPointList, order);
+    d = new Discretisation(*courbe, step);
+    colors[0] = 1.0f; colors[1] = 1.0f; colors[2] = 0.0f;
+    if (t.getPValue()>1 || s.getPValue()>1 || t.getPValue()<0 || s.getPValue()<0){
+        qDebug()<<"Les paramètres doivent être compris dans l'intervalle [0,1].";
+        return new PrepOpenGL(d, colors, 0, 0);
+    } else return new PrepOpenGL(d, colors, t, s);
+}
 
 void myOpenGLWidget::makeGLObjects()
 {
@@ -90,7 +125,6 @@ void myOpenGLWidget::makeGLObjects()
         Point P30, P31, P32, P33, P34;
         Point P40, P41, P42, P43, P44;
         float * coord = new float[3];
-        GLfloat * colors = new GLfloat[3]; //1 couleur (RBG) par sommet
 
         //coordonnées des points de contrôle
         //p00-p03
@@ -138,27 +172,40 @@ void myOpenGLWidget::makeGLObjects()
         P44 = P34.translate(-0.1,0.45,-0.4);
 
 
-    ///////segment 1
-    int step = 2;
-    p = (float) step;
-    segment = new Segment(step, P00, P33);
-    d = new Discretisation(*segment, p);
-    colors[0] = 1.0f; colors[1] = 0.0f; colors[2] = 0.0f;
-    vbo0 = new PrepOpenGL(d, colors);
+    ///////polyèdre de contrôle
+    listVBO.push_back(ctrlPolyVBO(P00,P01));
+    listVBO.push_back(ctrlPolyVBO(P01,P02));
+    listVBO.push_back(ctrlPolyVBO(P02,P03));
 
-    /*
-    ///////segment 2
-    segment = new Segment(step, P3, P1);
-    d = new Discretisation(*segment, p);
-    vbo1 = new PrepOpenGL(d, colors);
+    listVBO.push_back(ctrlPolyVBO(P10,P11));
+    listVBO.push_back(ctrlPolyVBO(P11,P12));
+    listVBO.push_back(ctrlPolyVBO(P12,P13));
 
-    ///////segment 3
-    segment = new Segment(step, P2, P3);
-    d = new Discretisation(*segment, p);
-    vbo2 = new PrepOpenGL(d, colors);*/
+    listVBO.push_back(ctrlPolyVBO(P20,P21));
+    listVBO.push_back(ctrlPolyVBO(P21,P22));
+    listVBO.push_back(ctrlPolyVBO(P22,P23));
 
+    listVBO.push_back(ctrlPolyVBO(P30,P31));
+    listVBO.push_back(ctrlPolyVBO(P31,P32));
+    listVBO.push_back(ctrlPolyVBO(P32,P33));
 
-    ///////courbe de Bézier
+    listVBO.push_back(ctrlPolyVBO(P00,P10));
+    listVBO.push_back(ctrlPolyVBO(P10,P20));
+    listVBO.push_back(ctrlPolyVBO(P20,P30));
+
+    listVBO.push_back(ctrlPolyVBO(P01,P11));
+    listVBO.push_back(ctrlPolyVBO(P11,P21));
+    listVBO.push_back(ctrlPolyVBO(P21,P31));
+
+    listVBO.push_back(ctrlPolyVBO(P02,P12));
+    listVBO.push_back(ctrlPolyVBO(P12,P22));
+    listVBO.push_back(ctrlPolyVBO(P22,P32));
+
+    listVBO.push_back(ctrlPolyVBO(P03,P13));
+    listVBO.push_back(ctrlPolyVBO(P13,P23));
+    listVBO.push_back(ctrlPolyVBO(P23,P33));
+
+    ///////courbes de Bézier
     Point *ctrlPointList = new Point[16];  //liste des points de contrôle de la courbe
     ctrlPointList[0] = P00;
     ctrlPointList[1] = P10;
@@ -177,16 +224,29 @@ void myOpenGLWidget::makeGLObjects()
     ctrlPointList[14] = P23;
     ctrlPointList[15] = P33;
 
+    //autre exemple, avec polyèdre de contrôle tronqué (degré -1)
+    Point *ctrlPointList2 = new Point[9];  //liste des points de contrôle de la courbe
+    ctrlPointList2[0] = P00;
+    ctrlPointList2[1] = P10;
+    ctrlPointList2[2] = P20;
+    ctrlPointList2[3] = P01;
+    ctrlPointList2[4] = P11;
+    ctrlPointList2[5] = P21;
+    ctrlPointList2[6] = P02;
+    ctrlPointList2[7] = P12;
+    ctrlPointList2[8] = P22;
 
-    step = 10;
-    p = (float) step;
-    courbe = new CourbeParametrique(P00, P33, ctrlPointList, 3);
-    d = new Discretisation(*courbe, step);
-    colors[0] = 0.0f; colors[1] = 1.0f; colors[2] = 0.0f;
-    vbo3 = new PrepOpenGL(d, colors, false);
+    //on instancie les VBO pour le dessins des courbes de Bézier
+    vbo0 = surfaceVBO(0.1, P00, P33, ctrlPointList, 3, "0");
+    //vbo1 = surfaceVBO(0.1, P00, P22, ctrlPointList2, 2, "line");
 
+    t =0.8;
+    s =0.5;
+    ptVBO = pointVBO(t, s, 0.1, P00, P33, ctrlPointList, 3);
 
     delete [] coord;
+    delete [] ctrlPointList;
+    delete [] ctrlPointList2;
 
 }
 
@@ -241,13 +301,20 @@ void myOpenGLWidget::paintGL()
 
     m_program->setUniformValue("matrix", m);
 
-    //segments
-    //vbo0->drawLines(m_program, glFuncs);
-    //vbo1->drawLines(m_program, glFuncs);
-    //vbo2->drawLines(m_program, glFuncs);
+    //polyèdre de contrôle
+    for(PrepOpenGL* vbo : listVBO){
+        vbo->draw(m_program,glFuncs);
+        //peu importe l'ordre dans lequel les opérations sont réalisées le polygone
+        //de contrôle apparait toujours à l'arrière de la surface, bien que nous ne
+        //sachions pas pourquoi
+    }
 
-    //courbe de Bézier
-    vbo3->drawPoints(m_program, glFuncs);
+    //surface de Bézier
+    vbo0->draw(m_program, glFuncs);
+    //vbo1->draw(m_program, glFuncs);
+
+    //point S(t,s)
+    //ptVBO->draw(m_program, glFuncs);
 
     m_program->release();
 }
@@ -315,8 +382,3 @@ void myOpenGLWidget::onTimeout()
 
     update();
 }
-
-
-
-
-

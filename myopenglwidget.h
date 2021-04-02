@@ -16,6 +16,7 @@
 #include "segment.h"
 #include "discretisation.h"
 #include "prepopengl.h"
+using namespace std;
 
 class myOpenGLWidget : public QOpenGLWidget,
                protected QOpenGLFunctions
@@ -45,6 +46,12 @@ protected:
     void mouseReleaseEvent(QMouseEvent *ev) override;
     void mouseMoveEvent(QMouseEvent *ev) override;
 
+    PrepOpenGL * ctrlPolyVBO(Point start, Point end);
+    PrepOpenGL * surfaceVBO(float step, Point start, Point end,
+                          Point * ctrlPointList, int order, QString type);
+    PrepOpenGL * pointVBO(Parametre t, Parametre s, float step, Point start, Point end,
+                                          Point * ctrlPointList, int order);
+
 private:
     double m_angle = 0;
     QTimer *m_timer = nullptr;
@@ -57,11 +64,14 @@ private:
     CourbeParametrique * courbe;
     Discretisation * d;
     Parametre p;
+    Parametre t;
+    Parametre s;
 
     PrepOpenGL * vbo0;
     PrepOpenGL * vbo1;
-    PrepOpenGL * vbo2;
-    PrepOpenGL * vbo3;
+    PrepOpenGL * ptVBO;
+
+    vector<PrepOpenGL*> listVBO;
 
     //RR matrices utiles
     QMatrix4x4 m_modelView;

@@ -13,7 +13,7 @@ class Discretisation
 {
 public:
     Discretisation(Segment segment, Parametre p);
-    Discretisation(CourbeParametrique courbe, Parametre p);
+    Discretisation(CourbeParametrique courbe, Parametre p, bool isSurface = true);
 
     Point getValueFromSegment(Parametre p);
     float * segmentToTable();
@@ -30,7 +30,8 @@ public:
     int binomialCoeff(int end, int start);
     float getP();
     int getCount();
-    int getStep();
+    bool isBezierSurface();
+    Point getPoint(Parametre t, Parametre s);
 
 private:
     Segment segment;
@@ -38,6 +39,7 @@ private:
     Parametre p;
     float * tablePoint = nullptr;
     int compteur;
+    bool isSurface;
 
 };
 
