@@ -40,8 +40,12 @@ protected slots:
     void displayPoly(bool);
     void drawType(int);
 
+    //slots pour l'affichage du point S(t,s)
     void setT(double);
     void setS(double);
+
+    //slot pour le changement du pas de discrétisation
+    void setStep(double);
 
 protected:
     void initializeGL() override;
@@ -79,6 +83,9 @@ private:
     //sur la surface de Bézier
     Parametre t=0;
     Parametre s=0;
+
+    //pas de discrétisation
+    float step=0.1;
 
     //courbes de Bézier, et un point
     PrepOpenGL * vbo0;

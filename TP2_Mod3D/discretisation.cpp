@@ -23,9 +23,12 @@ Discretisation::Discretisation(CourbeParametrique courbe, Parametre p, bool isSu
 Point Discretisation::getValueFromSegment(Parametre p){
 
     Point newPoint;
-    newPoint.setX((1-p.getPValue())*segment.getStart().getX() + p.getPValue()*segment.getEnd().getX());
-    newPoint.setY((1-p.getPValue())*segment.getStart().getY() + p.getPValue()*segment.getEnd().getY());
-    newPoint.setZ((1-p.getPValue())*segment.getStart().getZ() + p.getPValue()*segment.getEnd().getZ());
+    newPoint.setX((1-p.getPValue())*segment.getStart().getX()
+                  + p.getPValue()*segment.getEnd().getX());
+    newPoint.setY((1-p.getPValue())*segment.getStart().getY()
+                  + p.getPValue()*segment.getEnd().getY());
+    newPoint.setZ((1-p.getPValue())*segment.getStart().getZ()
+                  + p.getPValue()*segment.getEnd().getZ());
 
     return newPoint;
 }
@@ -59,9 +62,12 @@ Point Discretisation::getValueFromBezierCurve(Parametre t){
     //vérifier si t est bien entre 0 et 1
     if(0 < (float) t.getPValue() && (float) t.getPValue() < 1){
         for (int i=0; i<courbe.getOrder()+1; i++){
-            newPoint.setX(newPoint.getX() + (bernsteinPolynomial(t, i)*courbe.getCtrlPointList(i).getX()));
-            newPoint.setY(newPoint.getY() + (bernsteinPolynomial(t,i)*courbe.getCtrlPointList(i).getY()));
-            newPoint.setZ(newPoint.getZ() + (bernsteinPolynomial(t,i)*courbe.getCtrlPointList(i).getZ()));
+            newPoint.setX(newPoint.getX() + (bernsteinPolynomial(t, i)
+                                             *courbe.getCtrlPointList(i).getX()));
+            newPoint.setY(newPoint.getY() + (bernsteinPolynomial(t,i)
+                                             *courbe.getCtrlPointList(i).getY()));
+            newPoint.setZ(newPoint.getZ() + (bernsteinPolynomial(t,i)
+                                             *courbe.getCtrlPointList(i).getZ()));
         }
     }
     else if (t.getPValue() == 0) return courbe.getStart();  //cas où t=0 -> début de la courbe
@@ -173,9 +179,12 @@ float * Discretisation::altBezierToTable(){
         for (int j=0; j<= (int) 1/step; j++){
 
                 //fabrication d'un nouveau point
-                tablePoint[3*(int)(1/step)*i+3*j]   = getValueFromBezierSurface((float) step*i, (float) step*j).getX();
-                tablePoint[1+3*(int)(1/step)*i+3*j] = getValueFromBezierSurface((float) step*i, (float) step*j).getY();
-                tablePoint[2+3*(int)(1/step)*i+3*j] = getValueFromBezierSurface((float) step*i, (float) step*j).getZ();
+                tablePoint[3*(int)(1/step)*i+3*j]   =
+                        getValueFromBezierSurface((float) step*i, (float) step*j).getX();
+                tablePoint[1+3*(int)(1/step)*i+3*j] =
+                        getValueFromBezierSurface((float) step*i, (float) step*j).getY();
+                tablePoint[2+3*(int)(1/step)*i+3*j] =
+                        getValueFromBezierSurface((float) step*i, (float) step*j).getZ();
                 //compteur++;
 
         }

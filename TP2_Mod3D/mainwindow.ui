@@ -100,9 +100,28 @@
           </property>
           <layout class="QGridLayout" name="gridLayout">
            <item row="0" column="2">
-            <widget class="QLabel" name="label_3">
+            <widget class="QLabel" name="slabel">
              <property name="text">
               <string>Paramètre s :</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="6">
+            <widget class="QPushButton" name="objButton">
+             <property name="minimumSize">
+              <size>
+               <width>200</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>200</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Charger OBJ</string>
              </property>
             </widget>
            </item>
@@ -113,6 +132,22 @@
              </property>
              <property name="singleStep">
               <double>0.050000000000000</double>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="5">
+            <widget class="QDoubleSpinBox" name="stepSpinBox">
+             <property name="minimum">
+              <double>0.010000000000000</double>
+             </property>
+             <property name="maximum">
+              <double>1.000000000000000</double>
+             </property>
+             <property name="singleStep">
+              <double>0.050000000000000</double>
+             </property>
+             <property name="value">
+              <double>0.100000000000000</double>
              </property>
             </widget>
            </item>
@@ -130,28 +165,16 @@
             </widget>
            </item>
            <item row="0" column="0">
-            <widget class="QLabel" name="label_2">
+            <widget class="QLabel" name="tlabel">
              <property name="text">
               <string>Paramètre t :</string>
              </property>
             </widget>
            </item>
            <item row="0" column="4">
-            <widget class="QPushButton" name="objButton">
-             <property name="minimumSize">
-              <size>
-               <width>200</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>200</width>
-               <height>16777215</height>
-              </size>
-             </property>
+            <widget class="QLabel" name="steplabel">
              <property name="text">
-              <string>Charger OBJ</string>
+              <string>Pas de discrétisation :</string>
              </property>
             </widget>
            </item>
@@ -195,6 +218,7 @@
     <slot>drawType(int)</slot>
     <slot>setT(double)</slot>
     <slot>setS(double)</slot>
+    <slot>setStep(double)</slot>
    </slots>
   </customwidget>
  </customwidgets>
@@ -239,7 +263,7 @@
    <slot>setT(double)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>288</x>
+     <x>218</x>
      <y>150</y>
     </hint>
     <hint type="destinationlabel">
@@ -255,12 +279,28 @@
    <slot>setS(double)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>616</x>
+     <x>420</x>
      <y>152</y>
     </hint>
     <hint type="destinationlabel">
      <x>607</x>
      <y>207</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>stepSpinBox</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>openGLWidget</receiver>
+   <slot>setStep(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>633</x>
+     <y>148</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>641</x>
+     <y>213</y>
     </hint>
    </hints>
   </connection>
