@@ -3,7 +3,6 @@
 //R. Raffin, M1 Informatique, "Surfaces 3D"
 //tiré de CC-BY Edouard.Thiel@univ-amu.fr - 22/01/2019
 
-
 #include "myopenglwidget.h"
 #include <QDebug>
 #include <QSurfaceFormat>
@@ -388,6 +387,7 @@ void myOpenGLWidget::onTimeout()
     update();
 }
 
+//fonctions modifiant l'affichage de la scène
 //permet d'afficher ou non le polyèdre de contrôle
 void myOpenGLWidget::displayPoly(bool b){
     isDisplayed=b;
