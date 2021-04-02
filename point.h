@@ -14,6 +14,9 @@
 
 #include <iostream>
 
+/**
+ * @brief The Point class : point en 3D
+ */
 class Point
 {
 private:

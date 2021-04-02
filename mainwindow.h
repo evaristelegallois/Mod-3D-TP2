@@ -9,6 +9,9 @@ namespace Ui {
 class MainWindow;
 }
 
+/**
+ * @brief The MainWindow class : fenêtre principale de l'application
+ */
 class MainWindow : public QMainWindow
 {
     Q_OBJECT

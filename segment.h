@@ -15,6 +15,9 @@
 #include "point.h"
 #include "parametre.h"
 
+/**
+ * @brief The Segment class : création d'un segment
+ */
 class Segment
 {
 private:

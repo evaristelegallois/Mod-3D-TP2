@@ -56,7 +56,7 @@ protected:
                                           Point * ctrlPointList, int order);
 
 private:
-    double m_angle = 0;
+    double m_angleX = 0;
     QTimer *m_timer = nullptr;
     double m_ratio = 1;
     //coordonnées en x et en y de la caméra pour le déplacement dans la scène avec le clavier

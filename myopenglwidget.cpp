@@ -35,9 +35,6 @@ myOpenGLWidget::myOpenGLWidget(QWidget *parent) :
     m_timer = new QTimer(this);
     m_timer->setInterval(50);  // msec
     connect (m_timer, SIGNAL(timeout()), this, SLOT(onTimeout()));
-
-    //MainWindow* main = new MainWindow();
-    //connect(main->clearSceneButton, &QAction::triggered, this, onPushButtonClearScene)
 }
 
 myOpenGLWidget::~myOpenGLWidget()
@@ -281,19 +278,19 @@ void myOpenGLWidget::paintGL()
     /// à mettre dans doProjection() pour clarifier
     /// -----------------------------------------
         m_modelView.setToIdentity();
-        m_modelView.lookAt(QVector3D(0.0f, 0.0f, 3.0f),    // Camera Position
-                         QVector3D(0.0f, 0.0f, 0.0f),    // Point camera looks towards
+        m_modelView.lookAt(QVector3D(1.0f, 0.0f, 3.0f),    // Camera Position
+                         QVector3D(1.0f, 0.0f, 0.0f),    // Point camera looks towards
                          QVector3D(0.0f, 1.0f, 0.0f));   // Up vector
 
         m_projection.setToIdentity ();
         m_projection.perspective(70.0, width() / height(), 0.1, 100.0); //ou m_ratio
 
         //centrer la vue sur les éléments géométriques dessinés
-        m_model.translate(-0.35, -0.2, 0);
-        m_model.translate(m_posX, m_posY, 0);
+        //m_model.translate(-0.35, -0.2, 0);
+        //m_model.translate(m_posX, m_posY, 0);
 
         // Rotation de la scène pour l'animation
-        m_model.rotate(m_angle, 0, 1, 0);
+        m_model.rotate(m_angleX, 1, 0, 0);
 
         QMatrix4x4 m = m_projection * m_modelView * m_model;
     ///----------------------------
@@ -325,9 +322,10 @@ void myOpenGLWidget::keyPressEvent(QKeyEvent *ev)
     qDebug() << __FUNCTION__ << ev->text();
 
     switch(ev->key()) {
-        case Qt::Key_Z :
-            m_angle += 1;
-            if (m_angle >= 360) m_angle -= 360;
+        //rotation selon l'axe x
+        case Qt::Key_X :
+            m_angleX += 0.2;
+            if (m_angleX >= 360) m_angleX -= 360;
             update();
             break;
         case Qt::Key_A :
@@ -388,5 +386,4 @@ void myOpenGLWidget::onTimeout()
 void myOpenGLWidget::displayPoly(bool b){
     isDisplayed=b;
     update();
-
 }
