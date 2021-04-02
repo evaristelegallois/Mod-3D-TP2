@@ -40,6 +40,9 @@ protected slots:
     void displayPoly(bool);
     void drawType(int);
 
+    void setT(double);
+    void setS(double);
+
 protected:
     void initializeGL() override;
     void doProjection();
@@ -74,8 +77,8 @@ private:
 
     //les paramètres s et t permettent d'obtenir un point
     //sur la surface de Bézier
-    Parametre t;
-    Parametre s;
+    Parametre t=0;
+    Parametre s=0;
 
     //courbes de Bézier, et un point
     PrepOpenGL * vbo0;

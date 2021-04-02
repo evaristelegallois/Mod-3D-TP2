@@ -240,8 +240,6 @@ void myOpenGLWidget::makeGLObjects()
     vbo0 = surfaceVBO(0.2, P00, P33, ctrlPointList, 3, type);
     //vbo1 = surfaceVBO(0.1, P00, P22, ctrlPointList2, 2, "line");
 
-    t =0.8;
-    s =0.5;
     ptVBO = pointVBO(t, s, 0.1, P00, P33, ctrlPointList, 3);
 
     delete [] coord;
@@ -390,11 +388,27 @@ void myOpenGLWidget::displayPoly(bool b){
     update();
 }
 
+//change dynamiquement le type de dessin de la surface de Bézier
 void myOpenGLWidget::drawType(int i){
-    qDebug()<<"int"<<i;
     if (i == 0) type = "triangle";
     else if (i == 1) type = "line";
     else if (i == 2) type = "0";
+
+    makeGLObjects();
+    update();
+}
+
+//change dynamiquement les paramètres t et s pour afficher un point
+// sur la surface de Bézier
+void myOpenGLWidget::setT(double value){
+    t.setPValue((float)value);
+
+    makeGLObjects();
+    update();
+}
+
+void myOpenGLWidget::setS(double value){
+    s.setPValue((float)value);
 
     makeGLObjects();
     update();
