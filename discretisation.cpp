@@ -106,9 +106,9 @@ float * Discretisation::altBezierToTable(){
         for (int j=0; j<= (int) 1/step; j++){
 
                 //fabrication d'un nouveau point
-                tablePoint[30*i+3*j]   = getValueFromBezierSurface((float) step*i, (float) step*j).getX();
-                tablePoint[1+30*i+3*j] = getValueFromBezierSurface((float) step*i, (float) step*j).getY();
-                tablePoint[2+30*i+3*j] = getValueFromBezierSurface((float) step*i, (float) step*j).getZ();
+                tablePoint[3*(int)(1/step)*i+3*j]   = getValueFromBezierSurface((float) step*i, (float) step*j).getX();
+                tablePoint[1+3*(int)(1/step)*i+3*j] = getValueFromBezierSurface((float) step*i, (float) step*j).getY();
+                tablePoint[2+3*(int)(1/step)*i+3*j] = getValueFromBezierSurface((float) step*i, (float) step*j).getZ();
                 //compteur++;
 
         }

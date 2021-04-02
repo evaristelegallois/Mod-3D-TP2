@@ -78,23 +78,23 @@ QVector<GLfloat> PrepOpenGL::tableToVBO(int step, float * tablePoint)
             for (int j = 0; j < sqrt(step)-1; ++j) {
                 //on stocke chaque couple de sommets/couleurs pour ne pas modifier
                 //l'organisation des buffers (3 sommets puis 3 couleurs sont attendus)
-                for (int u = 0; u < 3; u++) vertData.append(vertices[30*i+3*j+u]);
-                for (int u = 0; u < 3; u++) vertData.append(colors[30*i+3*j+u]);
+                for (int u = 0; u < 3; u++) vertData.append(vertices[3*(int)(sqrt(step)-1)*i+3*j+u]);
+                for (int u = 0; u < 3; u++) vertData.append(colors[3*(int)(sqrt(step)-1)*i+3*j+u]);
 
-                for (int u = 0; u < 3; u++) vertData.append(vertices[30*i+3*(j+1)+u]);
-                for (int u = 0; u < 3; u++) vertData.append(colors[30*i+3*(j+1)+u]);
+                for (int u = 0; u < 3; u++) vertData.append(vertices[3*(int)(sqrt(step)-1)*i+3*(j+1)+u]);
+                for (int u = 0; u < 3; u++) vertData.append(colors[3*(int)(sqrt(step)-1)*i+3*(j+1)+u]);
 
-                for (int u = 0; u < 3; u++) vertData.append(vertices[30*(i+1)+3*(j)+u]);
-                for (int u = 0; u < 3; u++) vertData.append(colors[30*(i+1)+3*(j)+u]);
+                for (int u = 0; u < 3; u++) vertData.append(vertices[3*(int)(sqrt(step)-1)*(i+1)+3*(j)+u]);
+                for (int u = 0; u < 3; u++) vertData.append(colors[3*(int)(sqrt(step)-1)*(i+1)+3*(j)+u]);
 
-                for (int u = 0; u < 3; u++) vertData.append(vertices[30*(i+1)+3*(j)+u]);
-                for (int u = 0; u < 3; u++) vertData.append(colors[30*(i+1)+3*(j)+u]);
+                for (int u = 0; u < 3; u++) vertData.append(vertices[3*(int)(sqrt(step)-1)*(i+1)+3*(j)+u]);
+                for (int u = 0; u < 3; u++) vertData.append(colors[3*(int)(sqrt(step)-1)*(i+1)+3*(j)+u]);
 
-                for (int u = 0; u < 3; u++) vertData.append(vertices[30*(i+1)+3*(j+1)+u]);
-                for (int u = 0; u < 3; u++) vertData.append(colors[30*(i+1)+3*(j+1)+u]);
+                for (int u = 0; u < 3; u++) vertData.append(vertices[3*(int)(sqrt(step)-1)*(i+1)+3*(j+1)+u]);
+                for (int u = 0; u < 3; u++) vertData.append(colors[3*(int)(sqrt(step)-1)*(i+1)+3*(j+1)+u]);
 
-                for (int u = 0; u < 3; u++) vertData.append(vertices[30*(i)+3*(j+1)+u]);
-                for (int u = 0; u < 3; u++) vertData.append(colors[30*(i)+3*(j+1)+u]);
+                for (int u = 0; u < 3; u++) vertData.append(vertices[3*(int)(sqrt(step)-1)*(i)+3*(j+1)+u]);
+                for (int u = 0; u < 3; u++) vertData.append(colors[3*(int)(sqrt(step)-1)*(i)+3*(j+1)+u]);
              }
         }
     //si filaire, on réorganise le VBO pour que les points soient orientés de telle façon
@@ -104,20 +104,20 @@ QVector<GLfloat> PrepOpenGL::tableToVBO(int step, float * tablePoint)
             for (int j = 0; j < sqrt(step)-1; ++j) {
                 //on stocke chaque couple de sommets/couleurs pour ne pas modifier
                 //l'organisation des buffers (3 sommets puis 3 couleurs sont attendus)
-                for (int u = 0; u < 3; u++) vertData.append(vertices[30*i+3*j+u]);
-                for (int u = 0; u < 3; u++) vertData.append(colors[30*i+3*j+u]);
+                for (int u = 0; u < 3; u++) vertData.append(vertices[3*(int)(sqrt(step)-1)*i+3*j+u]);
+                for (int u = 0; u < 3; u++) vertData.append(colors[3*(int)(sqrt(step)-1)*i+3*j+u]);
 
-                for (int u = 0; u < 3; u++) vertData.append(vertices[30*i+3*(j+1)+u]);
-                for (int u = 0; u < 3; u++) vertData.append(colors[30*i+3*(j+1)+u]);
+                for (int u = 0; u < 3; u++) vertData.append(vertices[3*(int)(sqrt(step)-1)*i+3*(j+1)+u]);
+                for (int u = 0; u < 3; u++) vertData.append(colors[3*(int)(sqrt(step)-1)*i+3*(j+1)+u]);
 
-                for (int u = 0; u < 3; u++) vertData.append(vertices[30*(i+1)+3*(j+1)+u]);
-                for (int u = 0; u < 3; u++) vertData.append(colors[30*(i+1)+3*(j+1)+u]);
+                for (int u = 0; u < 3; u++) vertData.append(vertices[3*(int)(sqrt(step)-1)*(i+1)+3*(j+1)+u]);
+                for (int u = 0; u < 3; u++) vertData.append(colors[3*(int)(sqrt(step)-1)*(i+1)+3*(j+1)+u]);
 
-                for (int u = 0; u < 3; u++) vertData.append(vertices[30*(i+1)+3*(j)+u]);
-                for (int u = 0; u < 3; u++) vertData.append(colors[30*(i+1)+3*(j)+u]);
+                for (int u = 0; u < 3; u++) vertData.append(vertices[3*(int)(sqrt(step)-1)*(i+1)+3*(j)+u]);
+                for (int u = 0; u < 3; u++) vertData.append(colors[3*(int)(sqrt(step)-1)*(i+1)+3*(j)+u]);
 
-                for (int u = 0; u < 3; u++) vertData.append(vertices[30*(i)+3*(j)+u]);
-                for (int u = 0; u < 3; u++) vertData.append(colors[30*(i)+3*(j)+u]);
+                for (int u = 0; u < 3; u++) vertData.append(vertices[3*(int)(sqrt(step)-1)*(i)+3*(j)+u]);
+                for (int u = 0; u < 3; u++) vertData.append(colors[3*(int)(sqrt(step)-1)*(i)+3*(j)+u]);
              }
         }
     //si affichage de points seulement, pas besoin de réorganiser le VBO
@@ -180,7 +180,7 @@ void PrepOpenGL::draw(QOpenGLShaderProgram *program, QOpenGLFunctions *glFuncs){
             glFuncs->glDrawArrays(GL_POINTS, 0,1);
 
     } else {
-            for(int i=0; i < pow(sqrt(d->getCount())-1,2); i++){
+            for(int i=0; i < pow(sqrt(d->getCount()),2)-(sqrt(d->getCount())-1); i++){
                 glPointSize(5.0f);
                 glFuncs->glDrawArrays(GL_POINTS, i,1);
             }

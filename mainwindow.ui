@@ -123,17 +123,6 @@
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <action name="actiondisplayCtrlPoly">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>displayCtrlPoly</string>
-   </property>
-   <property name="toolTip">
-    <string>displayCtrlPoly</string>
-   </property>
-  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -141,23 +130,27 @@
    <class>myOpenGLWidget</class>
    <extends>QOpenGLWidget</extends>
    <header location="global">myopenglwidget.h</header>
+   <slots>
+    <slot>displayCtrlPoly(bool)</slot>
+    <slot>displayPoly(bool)</slot>
+   </slots>
   </customwidget>
  </customwidgets>
  <resources/>
  <connections>
   <connection>
    <sender>displayCtrlPolyButton</sender>
-   <signal>stateChanged(int)</signal>
+   <signal>clicked(bool)</signal>
    <receiver>openGLWidget</receiver>
-   <slot>repaint()</slot>
+   <slot>displayPoly(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>158</x>
+     <x>96</x>
      <y>72</y>
     </hint>
     <hint type="destinationlabel">
-     <x>451</x>
-     <y>387</y>
+     <x>452</x>
+     <y>201</y>
     </hint>
    </hints>
   </connection>

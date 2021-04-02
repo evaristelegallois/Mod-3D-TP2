@@ -237,7 +237,7 @@ void myOpenGLWidget::makeGLObjects()
     ctrlPointList2[8] = P22;
 
     //on instancie les VBO pour le dessins des courbes de Bézier
-    vbo0 = surfaceVBO(0.1, P00, P33, ctrlPointList, 3, "0");
+    vbo0 = surfaceVBO(0.2, P00, P33, ctrlPointList, 3, "line");
     //vbo1 = surfaceVBO(0.1, P00, P22, ctrlPointList2, 2, "line");
 
     t =0.8;
@@ -255,7 +255,6 @@ void myOpenGLWidget::tearGLObjects()
 {
     m_vbo.destroy();
 }
-
 
 void myOpenGLWidget::resizeGL(int w, int h)
 {
@@ -301,12 +300,14 @@ void myOpenGLWidget::paintGL()
 
     m_program->setUniformValue("matrix", m);
 
-    //polyèdre de contrôle
-    for(PrepOpenGL* vbo : listVBO){
-        vbo->draw(m_program,glFuncs);
-        //peu importe l'ordre dans lequel les opérations sont réalisées le polygone
-        //de contrôle apparait toujours à l'arrière de la surface, bien que nous ne
-        //sachions pas pourquoi
+    if (isDisplayed){
+        //polyèdre de contrôle
+        for(PrepOpenGL* vbo : listVBO){
+            vbo->draw(m_program,glFuncs);
+            //peu importe l'ordre dans lequel les opérations sont réalisées le polygone
+            //de contrôle apparait toujours à l'arrière de la surface, bien que nous ne
+            //sachions pas pourquoi (peut-être à cause de la partie plus "enfoncée" du polyèdre)
+        }
     }
 
     //surface de Bézier
@@ -314,7 +315,7 @@ void myOpenGLWidget::paintGL()
     //vbo1->draw(m_program, glFuncs);
 
     //point S(t,s)
-    //ptVBO->draw(m_program, glFuncs);
+    ptVBO->draw(m_program, glFuncs);
 
     m_program->release();
 }
@@ -356,6 +357,7 @@ void myOpenGLWidget::keyPressEvent(QKeyEvent *ev)
     }
 }
 
+
 void myOpenGLWidget::keyReleaseEvent(QKeyEvent *ev)
 {
     qDebug() << __FUNCTION__ << ev->text();
@@ -381,4 +383,10 @@ void myOpenGLWidget::onTimeout()
     qDebug() << __FUNCTION__ ;
 
     update();
+}
+
+void myOpenGLWidget::displayPoly(bool b){
+    isDisplayed=b;
+    update();
+
 }

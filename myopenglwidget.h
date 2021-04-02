@@ -26,6 +26,8 @@ class myOpenGLWidget : public QOpenGLWidget,
 public:
     explicit myOpenGLWidget(QWidget *parent = nullptr);
     ~myOpenGLWidget();
+    void setIsDisplayed(bool b);
+    bool getIsDisplayed();
 
 public slots:
 
@@ -34,6 +36,7 @@ signals:  // On ne les implémente pas, elles seront générées par MOC ;
 
 protected slots:
     void onTimeout();
+    void displayPoly(bool);
 
 protected:
     void initializeGL() override;
@@ -72,6 +75,8 @@ private:
     PrepOpenGL * ptVBO;
 
     vector<PrepOpenGL*> listVBO;
+
+    bool isDisplayed = false;
 
     //RR matrices utiles
     QMatrix4x4 m_modelView;
